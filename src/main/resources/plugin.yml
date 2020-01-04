@@ -1,0 +1,5 @@
+name: Bingo
+version: ${project.version}
+main: github.xathviar.plugins.bingo.Startup
+api-version: 1.13
+authors: [xathviar, Laserlord]
