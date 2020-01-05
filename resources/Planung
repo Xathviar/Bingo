@@ -1,0 +1,4 @@
+Klasse, die die benoetigten items beinhaltet und gerniert
+Listener, der schaut ob jemand ein Item bekommen hat
+Klasse, die speichert welcher Spieler welche Items schon hat, und generell welcher Spieler mitmacht
+Klasse, die sich um Commands kuemmert (grafische Oberflaeche wer was noch braucht, neues bingo beginnen, bingo joinen, bingo verlassen)4
