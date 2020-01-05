@@ -1,20 +1,21 @@
 package github.xathviar.plugins.bingo;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.management.BufferPoolMXBean;
 import java.util.HashMap;
 
 public class BingoListener implements Listener {
-    HashMap<Player, ItemStack> itemStackHashMap = new HashMap<>();
+    private BIngoData data = new BIngoData();
 
     @EventHandler
     public void onPlayerPickup(EntityPickupItemEvent entityPickupItemEvent) {
@@ -36,16 +37,21 @@ public class BingoListener implements Listener {
     public void onChestShifting(InventoryClickEvent event) {
         Inventory top = event.getView().getTopInventory();
         Inventory bottom = event.getView().getBottomInventory();
+
         if (top.getType() == InventoryType.CHEST && bottom.getType() == InventoryType.PLAYER) {
             if (event.getCurrentItem() != null && event.getCurrentItem().getType() != Material.AIR) {
-                event.getWhoClicked().sendMessage(event.getCurrentItem().toString());
-                itemStackHashMap.put((Player) event.getWhoClicked(), event.getCurrentItem());
-            } else if (event.getCurrentItem() != null
-                    && itemStackHashMap.getOrDefault((Player) event.getWhoClicked(), new ItemStack(Material.BARRIER)).getType() != Material.BARRIER
-                    && event.getCurrentItem().getType() == Material.AIR) {
-                event.getWhoClicked().sendMessage(itemStackHashMap.get((Player) event.getWhoClicked()).toString());
-                itemStackHashMap.remove((Player) event.getWhoClicked());
+                //event.getWhoClicked().sendMessage(event.getCurrentItem().toString());
+                data.setItem(event.getWhoClicked(), event.getCurrentItem());
+                event.getWhoClicked().sendMessage(data.getItem(event.getWhoClicked()).toString());
+            } else {
+                event.getWhoClicked().sendMessage(data.getItem(event.getWhoClicked()).toString());
             }
+//            else if (event.getCurrentItem() != null
+//                    && itemStackHashMap.getOrDefault( event.getWhoClicked(), new ItemStack(Material.BARRIER)).getType() != Material.BARRIER
+//                    && event.getCurrentItem().getType() == Material.AIR) {
+//                event.getWhoClicked().sendMessage(itemStackHashMap.get( event.getWhoClicked()).toString());
+//                itemStackHashMap.remove( event.getWhoClicked());
+//            }
         }
     }
 }
