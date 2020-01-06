@@ -3,15 +3,17 @@ package github.xathviar.plugins.bingo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 import static github.xathviar.plugins.bingo.HelperClass.broadcastMessage;
 import static github.xathviar.plugins.bingo.HelperClass.sendMessage;
@@ -127,8 +129,9 @@ public class BingoData {
         for (int i = 1; i < 4; i++) {
             for (int j = 3; j < 6; j++) {
                 ItemStack itemStack = new ItemStack(bingoItems.get(counter));
-                if (entityBingoMap.get(entity).contains(bingoItems.get(counter))) {
+                if (entityBingoMap.get(entity) != null && entityBingoMap.get(entity).contains(bingoItems.get(counter))) {
                     itemStack.setLore(Collections.singletonList(ChatColor.GREEN + "Item found" + ChatColor.RESET));
+                    itemStack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
                     itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 }
                 inventory.setItem(9 * i + j, itemStack);
