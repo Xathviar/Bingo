@@ -1,6 +1,6 @@
 package github.xathviar.plugins.bingo;
 
-import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -10,6 +10,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static github.xathviar.plugins.bingo.HelperClass.broadcastMessage;
+import static github.xathviar.plugins.bingo.HelperClass.sendMessage;
 
 public class BingoData {
 
@@ -59,7 +62,7 @@ public class BingoData {
                 items.add(item.getType());
                 entityBingoMap.put(entity, items);
             }
-            entity.sendMessage(item.getType().toString() + " has been registered");
+            sendMessage(entity, ChatColor.YELLOW + item.getType().toString() + ChatColor.WHITE + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
         }
         checkWin(entity);
     }
@@ -78,7 +81,7 @@ public class BingoData {
                     itemstacks.add(bingoItem);
                     entityBingoMap.put(entity, itemstacks);
                 }
-                entity.sendMessage(bingoItem.toString() + " has been registered");
+                sendMessage(entity, ChatColor.YELLOW + bingoItem.toString() + ChatColor.WHITE + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
             }
         }
         checkWin(entity);
@@ -86,7 +89,7 @@ public class BingoData {
 
     private void checkWin(Player entity) {
         if (entityBingoMap.get(entity) != null && entityBingoMap.get(entity).size() == 9) {
-            Bukkit.getServer().broadcastMessage(entity.getDisplayName() + " won the Bingo");
+            broadcastMessage(entity.getDisplayName() + " won the Bingo");
             genItems();
             entityBingoMap.clear();
         }
