@@ -35,6 +35,9 @@ public class BingoListener implements Listener {
 
     @EventHandler
     public void onChestShifting(InventoryClickEvent event) {
+        if (event.getView().getTitle().equals("Bingo Board")) {
+            event.setCancelled(true);
+        }
         data.checkItems(event.getWhoClicked(), event.getWhoClicked().getInventory());
     }
 
