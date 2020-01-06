@@ -19,7 +19,6 @@ public class BingoListener implements Listener {
     public void onPlayerPickup(EntityPickupItemEvent entityPickupItemEvent) {
         if (entityPickupItemEvent.getEntity() instanceof Player) {
             Player player = (Player) entityPickupItemEvent.getEntity();
-            player.sendMessage(entityPickupItemEvent.getItem().getItemStack().toString());
             data.checkItem(player, entityPickupItemEvent.getItem().getItemStack());
         }
     }
@@ -28,7 +27,6 @@ public class BingoListener implements Listener {
     public void onCraftEvent(CraftItemEvent craftItemEvent) {
         if (craftItemEvent.getInventory().getHolder() instanceof Player) {
             Player player = (Player) craftItemEvent.getInventory().getHolder();
-            player.sendMessage(craftItemEvent.getRecipe().getResult().toString());
             data.checkItem(craftItemEvent.getWhoClicked(), craftItemEvent.getRecipe().getResult());
         }
     }

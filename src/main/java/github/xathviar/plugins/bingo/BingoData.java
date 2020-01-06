@@ -28,9 +28,7 @@ public class BingoData {
         this.startup = startup;
         genItems();
     }
-
-
-
+    
 
     public void checkItem(HumanEntity entity, ItemStack item) {
         checkItem((Player) entity, item);
