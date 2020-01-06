@@ -127,7 +127,7 @@ public class BingoData {
 
     public void genItems() {
         Set<Material> items = new HashSet<>();
-        List<Material> materials = Arrays.asList(Material.class.getEnumConstants());
+        List<Material> materials = new ArrayList<>(Arrays.asList(Material.class.getEnumConstants()));
         materials.remove(Material.AIR);
         materials.remove(Material.ATTACHED_MELON_STEM);
         materials.remove(Material.ATTACHED_PUMPKIN_STEM);
