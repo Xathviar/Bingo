@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static github.xathviar.plugins.bingo.HelperClass.broadcastMessage;
-import static github.xathviar.plugins.bingo.HelperClass.sendMessage;
 
 public class BingoData {
 
@@ -37,12 +36,12 @@ public class BingoData {
     public void genItems() {
         //TODO generator
         bingoItems.add(Material.OAK_BOAT);
-        bingoItems.add(Material.ACACIA_FENCE);
+        bingoItems.add(Material.DARK_OAK_LEAVES);
         bingoItems.add(Material.LILY_PAD);
-        bingoItems.add(Material.WOODEN_PICKAXE);
+        bingoItems.add(Material.STONE_PICKAXE);
         bingoItems.add(Material.DIAMOND);
-        bingoItems.add(Material.EMERALD_BLOCK);
-        bingoItems.add(Material.ENDER_EYE);
+        bingoItems.add(Material.REPEATER);
+        bingoItems.add(Material.ENDER_PEARL);
         bingoItems.add(Material.IRON_CHESTPLATE);
         bingoItems.add(Material.WHEAT_SEEDS);
     }
@@ -70,7 +69,7 @@ public class BingoData {
                     items.add(item.getType());
                     entityBingoMap.put(entity, items);
                 }
-                sendMessage(entity, ChatColor.YELLOW + item.getType().toString() + ChatColor.RESET + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
+                broadcastMessage(ChatColor.YELLOW + item.getType().toString() + ChatColor.RESET + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
             }
             checkWin(entity);
         }
@@ -91,7 +90,7 @@ public class BingoData {
                         itemstacks.add(bingoItem);
                         entityBingoMap.put(entity, itemstacks);
                     }
-                    sendMessage(entity, ChatColor.YELLOW + bingoItem.toString() + ChatColor.RESET + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
+                    broadcastMessage(ChatColor.YELLOW + bingoItem.toString() + ChatColor.RESET + " has been registered by " + entity.getDisplayName() + " (" + entityBingoMap.get(entity).size() + "/9)");
                 }
             }
             checkWin(entity);
