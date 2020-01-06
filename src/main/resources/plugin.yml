@@ -14,3 +14,5 @@ commands:
     description: joins the game of bingo
   bingo create:
     description: creates a new game of bingo
+  bingo board:
+    description: displays the current bingo board

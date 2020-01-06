@@ -1,15 +1,17 @@
 package github.xathviar.plugins.bingo;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static github.xathviar.plugins.bingo.HelperClass.broadcastMessage;
 import static github.xathviar.plugins.bingo.HelperClass.sendMessage;
@@ -97,6 +99,30 @@ public class BingoData {
 
     public void resetEntity(Player entity) {
         entityBingoMap.remove(entity);
+    }
+
+    public void displayBoard(Player entity) {
+        Inventory inventory = Bukkit.createInventory(entity, 5 * 9, "Bingo Board");
+        for (int i = 0; i < 9; i++) {
+            inventory.setItem(i, new ItemStack(Material.LIME_STAINED_GLASS_PANE));
+        }
+        for (int i = 0; i < 9; i++) {
+            inventory.setItem(i + 9 * 4, new ItemStack(Material.LIME_STAINED_GLASS_PANE));
+        }
+
+        int counter = 0;
+        for (int i = 1; i < 4; i++) {
+            for (int j = 3; j < 6; j++) {
+                ItemStack itemStack = new ItemStack(bingoItems.get(counter));
+                if (entityBingoMap.get(entity).contains(bingoItems.get(counter))) {
+                    itemStack.setLore(Collections.singletonList(ChatColor.GREEN + "Item found" + ChatColor.RESET));
+                    itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+                }
+                inventory.setItem(9 * i + j, itemStack);
+                counter++;
+            }
+        }
+        entity.openInventory(inventory);
     }
 
 }
