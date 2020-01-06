@@ -70,8 +70,12 @@ public final class Startup extends JavaPlugin {
             } else if (args[0].equals("pause") && sender.hasPermission("bingo.pause")) {
                 started = false;
                 scheduler.cancelTask(task.getTaskId());
-            } else if (args[0].equals("board") && started) {
-                bingoData.displayBoard((Player) sender);
+            } else if (args[0].equals("board")) {
+                if (started) {
+                    bingoData.displayBoard((Player) sender);
+                } else {
+                    sendMessage((Player) sender, "You cannot see the board if the game hasn't even started yet.");
+                }
             } else {
                 sendMessage((Player) sender, "That is not a valid bingo command");
             }
