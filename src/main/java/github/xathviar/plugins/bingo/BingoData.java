@@ -1,5 +1,6 @@
 package github.xathviar.plugins.bingo;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -12,28 +13,28 @@ import java.util.List;
 
 public class BingoData {
 
-    public static HashMap<Player, List<ItemStack>> entityBingoMap;
+    public static HashMap<Player, List<Material>> entityBingoMap;
 
-    public static List<ItemStack> bingoItems;
+    public static List<Material> bingoItems;
 
     public BingoData() {
         entityBingoMap = new HashMap<>();
         bingoItems = new ArrayList<>();
-        genItems(9);
+        genItems();
     }
 
 
-    public void genItems(int itemSize) {
+    public void genItems() {
         //TODO generator
-        bingoItems.add(new ItemStack(Material.OAK_BOAT));
-        bingoItems.add(new ItemStack(Material.ACACIA_FENCE));
-        bingoItems.add(new ItemStack(Material.LILY_PAD));
-        bingoItems.add(new ItemStack(Material.WOODEN_PICKAXE));
-        bingoItems.add(new ItemStack(Material.DIAMOND));
-        bingoItems.add(new ItemStack(Material.EMERALD_BLOCK));
-        bingoItems.add(new ItemStack(Material.ENDER_EYE));
-        bingoItems.add(new ItemStack(Material.IRON_CHESTPLATE));
-        bingoItems.add(new ItemStack(Material.WHEAT_SEEDS));
+        bingoItems.add(Material.OAK_BOAT);
+        bingoItems.add(Material.ACACIA_FENCE);
+        bingoItems.add(Material.LILY_PAD);
+        bingoItems.add(Material.WOODEN_PICKAXE);
+        bingoItems.add(Material.DIAMOND);
+        bingoItems.add(Material.EMERALD_BLOCK);
+        bingoItems.add(Material.ENDER_EYE);
+        bingoItems.add(Material.IRON_CHESTPLATE);
+        bingoItems.add(Material.WHEAT_SEEDS);
     }
 
     public void checkItem(HumanEntity entity, ItemStack item) {
@@ -41,25 +42,53 @@ public class BingoData {
     }
 
     public void checkItems(HumanEntity entity, Inventory inventory) {
-        checkItems((Player)entity, inventory);
+        checkItems((Player) entity, inventory);
     }
+
     public void checkItem(Player entity, ItemStack item) {
-        if (bingoItems.contains(item) && !entityBingoMap.get(entity).contains(item)) {
-            List<ItemStack> itemstacks = entityBingoMap.get(entity);
-            itemstacks.add(item);
-            entityBingoMap.put(entity, itemstacks);
+        if (bingoItems.contains(item.getType())
+                && !entityBingoMap.getOrDefault(entity, new ArrayList<Material>() {{
+            add(Material.BARRIER);
+        }}).contains(item.getType())) {
+            if (entityBingoMap.get(entity) != null) {
+                List<Material> itemstacks = entityBingoMap.get(entity);
+                itemstacks.add(item.getType());
+                entityBingoMap.put(entity, itemstacks);
+            } else {
+                List<Material> items = new ArrayList<>();
+                items.add(item.getType());
+                entityBingoMap.put(entity, items);
+            }
             entity.sendMessage(item.getType().toString() + " has been registered");
         }
+        checkWin(entity);
     }
 
     public void checkItems(Player entity, Inventory inventory) {
-        for (ItemStack bingoItem : bingoItems) {
-            if (inventory.contains(bingoItem) && !entityBingoMap.get(entity).contains(bingoItem)) {
-                List<ItemStack> itemStacks = entityBingoMap.get(entity);
-                itemStacks.add(bingoItem);
-                entityBingoMap.put(entity, itemStacks);
-                entity.sendMessage(bingoItem.getType().toString() + " has been registered");
+        for (Material bingoItem : bingoItems) {
+            if (inventory.contains(bingoItem) && !entityBingoMap.getOrDefault(entity, new ArrayList<Material>() {{
+                add(Material.BARRIER);
+            }}).contains(bingoItem)) {
+                if (entityBingoMap.get(entity) != null) {
+                    List<Material> itemStacks = entityBingoMap.get(entity);
+                    itemStacks.add(bingoItem);
+                    entityBingoMap.put(entity, itemStacks);
+                } else {
+                    List<Material> itemstacks = new ArrayList<>();
+                    itemstacks.add(bingoItem);
+                    entityBingoMap.put(entity, itemstacks);
+                }
+                entity.sendMessage(bingoItem.toString() + " has been registered");
             }
+        }
+        checkWin(entity);
+    }
+
+    private void checkWin(Player entity) {
+        if (entityBingoMap.get(entity) != null && entityBingoMap.get(entity).size() == 9) {
+            Bukkit.getServer().broadcastMessage(entity.getDisplayName() + " won the Bingo");
+            genItems();
+            entityBingoMap.clear();
         }
     }
 
