@@ -56,6 +56,10 @@ public final class Startup extends JavaPlugin {
                     started = false;
                     scheduler.cancelTask(task.getTaskId());
                     sendMessage((Player) sender, "Your items have been reset");
+                    s[0] = 0;
+                    m[0] = 0;
+                    h[0] = 0;
+
                 } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start")) {
                     started = true;
                     task = scheduler.runTaskTimer(this, () -> {

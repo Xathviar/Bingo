@@ -128,6 +128,7 @@ public class BingoData {
     public void genItems() {
         Set<Material> items = new HashSet<>();
         List<Material> materials = new ArrayList<>(Arrays.asList(Material.class.getEnumConstants()));
+        materials.removeIf(n -> n.toString().startsWith("LEGACY"));
         materials.remove(Material.AIR);
         materials.remove(Material.ATTACHED_MELON_STEM);
         materials.remove(Material.ATTACHED_PUMPKIN_STEM);
@@ -151,6 +152,7 @@ public class BingoData {
         materials.remove(Material.BRAIN_CORAL_BLOCK);
         materials.remove(Material.BRAIN_CORAL_FAN);
         materials.remove(Material.BRAIN_CORAL_WALL_FAN);
+        materials.remove(Material.BREWING_STAND);
         materials.remove(Material.BRICKS);
         materials.remove(Material.BROWN_BANNER);
         materials.remove(Material.BROWN_SHULKER_BOX);
@@ -168,6 +170,7 @@ public class BingoData {
         materials.remove(Material.CHAINMAIL_BOOTS);
         materials.remove(Material.CHAINMAIL_LEGGINGS);
         materials.remove(Material.CHAINMAIL_CHESTPLATE);
+        materials.remove(Material.CHISELED_QUARTZ_BLOCK);
         materials.remove(Material.CHAINMAIL_HELMET);
         materials.remove(Material.CHICKEN_SPAWN_EGG);
         materials.remove(Material.CHIPPED_ANVIL);
