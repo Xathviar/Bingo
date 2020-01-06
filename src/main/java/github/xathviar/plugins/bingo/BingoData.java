@@ -92,4 +92,8 @@ public class BingoData {
         }
     }
 
+    public void resetEntity(Player entity) {
+        entityBingoMap.remove(entity);
+    }
+
 }

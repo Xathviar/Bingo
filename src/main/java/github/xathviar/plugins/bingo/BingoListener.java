@@ -1,14 +1,12 @@
 package github.xathviar.plugins.bingo;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 public class BingoListener implements Listener {
     private BingoData data;
@@ -37,11 +35,12 @@ public class BingoListener implements Listener {
 
     @EventHandler
     public void onChestShifting(InventoryClickEvent event) {
-        Inventory top = event.getView().getTopInventory();
-        Inventory bottom = event.getView().getBottomInventory();
+        System.out.println("hehe");
+        data.checkItems(event.getWhoClicked(), event.getWhoClicked().getInventory());
+    }
 
-        if (top.getType() == InventoryType.CHEST && bottom.getType() == InventoryType.PLAYER) {
-            data.checkItems(event.getWhoClicked(), bottom);
-        }
+    @EventHandler
+    public void onInvetoryClose(InventoryCloseEvent event) {
+        data.checkItems(event.getPlayer(), event.getPlayer().getInventory());
     }
 }
