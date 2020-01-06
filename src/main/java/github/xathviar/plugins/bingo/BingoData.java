@@ -455,6 +455,10 @@ public class BingoData {
         materials.remove(Material.REDSTONE_ORE);
         materials.remove(Material.REDSTONE_WALL_TORCH);
         materials.remove(Material.REDSTONE_WIRE);
+        materials.remove(Material.QUARTZ_SLAB);
+        materials.remove(Material.QUARTZ_STAIRS);
+        materials.remove(Material.QUARTZ_PILLAR);
+        materials.remove(Material.QUARTZ_BLOCK);
         materials.remove(Material.REPEATING_COMMAND_BLOCK);
         materials.remove(Material.PACKED_ICE);
         materials.remove(Material.PANDA_SPAWN_EGG);
