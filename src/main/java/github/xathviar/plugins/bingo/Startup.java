@@ -43,10 +43,11 @@ public final class Startup extends JavaPlugin {
                 sendMessage((Player) sender, "'/bingo reset' reset the items you already have");
                 sendMessage((Player) sender, "'/bingo join' join the game of bingo");
                 sendMessage((Player) sender, "'/bingo create' create a game of bingo");
-            } else if (args[0].equals("reset")) {
+                sendMessage((Player) sender, "'/bingo board' displays the current bingo board");
+            } else if (args[0].equals("reset") && sender.hasPermission("bingo.reset")) {
                 bingoData.resetEntity((Player) sender);
-                sendMessage((Player) sender, "Your Items have been resetet");
-            } else if (args[0].equals("start")) {
+                sendMessage((Player) sender, "Your items have been reset");
+            } else if (args[0].equals("start") && sender.hasPermission("bingo.start")) {
                 started = true;
                 task = scheduler.runTaskTimer(this, () -> {
                     s[0]++;
@@ -60,9 +61,11 @@ public final class Startup extends JavaPlugin {
                     }
                     Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Seit %s%02d:%02d:%02d%s im Bingo", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
                 }, 0, 20);
-            } else if (args[0].equals("pause")) {
+            } else if (args[0].equals("pause") && sender.hasPermission("bingo.pause")) {
                 started = false;
                 scheduler.cancelTask(task.getTaskId());
+            } else if (args[0].equals("board")) {
+                bingoData.displayBoard((Player) sender);
             }
 
         } else {
