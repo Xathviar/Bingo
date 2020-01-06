@@ -55,7 +55,7 @@ public class BingoData {
                     items.add(item.getType());
                     entityBingoMap.put(entity, items);
                 }
-                broadcastMessage(ChatColor.YELLOW + item.getType().toString() + ChatColor.RESET + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
+                broadcastMessage(ChatColor.YELLOW + item.getType().toString() + ChatColor.RESET + " has been registered by " + entity.getDisplayName() + " (" + entityBingoMap.get(entity).size() + "/9)");
             }
             checkWin(entity);
         }
@@ -520,4 +520,8 @@ public class BingoData {
         bingoItems.addAll(items);
     }
 
+    public void reset() {
+        genItems();
+        entityBingoMap.clear();
+    }
 }

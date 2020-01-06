@@ -52,7 +52,9 @@ public final class Startup extends JavaPlugin {
                     sendMessage((Player) sender, "'/bingo create' create a game of bingo");
                     sendMessage((Player) sender, "'/bingo board' displays the current bingo board");
                 } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("bingo.reset")) {
-                    bingoData.resetEntity((Player) sender);
+                    bingoData.reset();
+                    started = false;
+                    scheduler.cancelTask(task.getTaskId());
                     sendMessage((Player) sender, "Your items have been reset");
                 } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start")) {
                     started = true;
