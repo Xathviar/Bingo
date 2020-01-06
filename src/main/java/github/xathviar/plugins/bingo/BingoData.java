@@ -31,16 +31,31 @@ public class BingoData {
 
 
     public void genItems() {
-        //TODO generator
-        bingoItems.add(Material.OAK_BOAT);
-        bingoItems.add(Material.DARK_OAK_LEAVES);
-        bingoItems.add(Material.LILY_PAD);
-        bingoItems.add(Material.STONE_PICKAXE);
-        bingoItems.add(Material.DIAMOND);
-        bingoItems.add(Material.REPEATER);
-        bingoItems.add(Material.ENDER_PEARL);
-        bingoItems.add(Material.IRON_CHESTPLATE);
-        bingoItems.add(Material.WHEAT_SEEDS);
+        Set<Material> items = new HashSet<>();
+        List<Material> materials = Arrays.asList(Material.class.getEnumConstants());
+        materials.remove(Material.BARRIER);
+        materials.remove(Material.BEDROCK);
+        materials.remove(Material.AIR);
+        materials.remove(Material.END_CRYSTAL);
+        materials.remove(Material.END_GATEWAY);
+        materials.remove(Material.END_PORTAL);
+        materials.remove(Material.NETHER_PORTAL);
+        materials.remove(Material.END_PORTAL_FRAME);
+        materials.remove(Material.END_ROD);
+        materials.remove(Material.ENDER_CHEST);
+        materials.remove(Material.LAVA);
+        materials.remove(Material.WATER);
+        materials.remove(Material.DIAMOND_ORE);
+        materials.remove(Material.COAL_ORE);
+        materials.remove(Material.SPAWNER);
+        materials.remove(Material.BAT_SPAWN_EGG);
+
+        while (items.size() < 9) {
+            items.add(materials.get(new Random().nextInt(materials.size())));
+        }
+
+        bingoItems.clear();
+        bingoItems.addAll(items);
     }
 
     public void checkItem(HumanEntity entity, ItemStack item) {
