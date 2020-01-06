@@ -7,12 +7,19 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
 import static github.xathviar.plugins.bingo.HelperClass.sendMessage;
 
 public final class Startup extends JavaPlugin {
-    BingoData bingoData;
-    boolean started;
+    private final int[] h = {0};
+    private final int[] m = {0};
+    private final int[] s = {0};
+    private BingoData bingoData;
+    private boolean started;
+    private BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+    private BukkitTask task;
+
 
     @Override
     public void onEnable() {
@@ -40,16 +47,8 @@ public final class Startup extends JavaPlugin {
                 sendMessage((Player) sender, "Your Items have been resetet");
             } else if (args[0].equals("start")) {
                 started = true;
-                BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-                final int[] h = {0};
-                final int[] m = {0};
-                final int[] s = {0};
-                final int[] t = {0};
-                scheduler.scheduleSyncDelayedTask(this, () -> {
-                    t[0]++;
-                    if (t[0] % 20 == 0) {
-                        s[0]++;
-                    }
+                task = scheduler.runTaskTimer(this, () -> {
+                    s[0]++;
                     if (s[0] == 60) {
                         s[0] = 0;
                         m[0]++;
@@ -58,10 +57,10 @@ public final class Startup extends JavaPlugin {
                         m[0] = 0;
                         h[0]++;
                     }
-                    System.out.println("hello");
-                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar("Seit " + h[0] + ':' + m[0] + ':' + s[0] + " im Bingo Spiel"))
-                    ;
-                });
+                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Seit %s%02d:%02d:%02d%s in der Challenge", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
+                }, 0, 20);
+            } else if (args[0].equals("pause")) {
+                scheduler.cancelTask(task.getTaskId());
             }
 
         } else {
