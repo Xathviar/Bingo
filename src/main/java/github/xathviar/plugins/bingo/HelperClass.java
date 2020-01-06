@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 public class HelperClass {
 
     public static void sendMessage(Player player, String message) {
-        player.sendMessage(ChatColor.AQUA + "[Bingo] " + ChatColor.WHITE + message);
+        player.sendMessage(ChatColor.AQUA + "[Bingo] " + ChatColor.RESET + message);
     }
 
     public static void sendMessage(HumanEntity entity, String message) {
@@ -16,6 +16,6 @@ public class HelperClass {
     }
 
     public static void broadcastMessage(String message) {
-        Bukkit.getServer().broadcastMessage(ChatColor.AQUA + "[Bingo] " + ChatColor.WHITE + message);
+        Bukkit.getServer().broadcastMessage(ChatColor.AQUA + "[Bingo] " + ChatColor.RESET + message);
     }
 }

@@ -70,7 +70,7 @@ public class BingoData {
                     items.add(item.getType());
                     entityBingoMap.put(entity, items);
                 }
-                sendMessage(entity, ChatColor.YELLOW + item.getType().toString() + ChatColor.WHITE + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
+                sendMessage(entity, ChatColor.YELLOW + item.getType().toString() + ChatColor.RESET + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
             }
             checkWin(entity);
         }
@@ -91,7 +91,7 @@ public class BingoData {
                         itemstacks.add(bingoItem);
                         entityBingoMap.put(entity, itemstacks);
                     }
-                    sendMessage(entity, ChatColor.YELLOW + bingoItem.toString() + ChatColor.WHITE + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
+                    sendMessage(entity, ChatColor.YELLOW + bingoItem.toString() + ChatColor.RESET + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
                 }
             }
             checkWin(entity);
@@ -129,6 +129,7 @@ public class BingoData {
         for (int i = 1; i < 4; i++) {
             for (int j = 3; j < 6; j++) {
                 ItemStack itemStack = new ItemStack(bingoItems.get(counter));
+                itemStack.setLore(Collections.singletonList(ChatColor.RED + "Item not found" + ChatColor.RESET));
                 if (entityBingoMap.get(entity) != null && entityBingoMap.get(entity).contains(bingoItems.get(counter))) {
                     itemStack.setLore(Collections.singletonList(ChatColor.GREEN + "Item found" + ChatColor.RESET));
                     itemStack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
