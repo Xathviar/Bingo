@@ -60,7 +60,7 @@ public final class Startup extends JavaPlugin {
                     m[0] = 0;
                     h[0] = 0;
 
-                } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start")) {
+                } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start") && !started) {
                     started = true;
                     task = scheduler.runTaskTimer(this, () -> {
                         s[0]++;
