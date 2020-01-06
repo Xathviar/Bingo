@@ -1,7 +1,7 @@
 name: Bingo
 version: ${project.version}
 main: github.xathviar.plugins.bingo.Startup
-api-version: 1.13
+api-version: "1.13"
 authors: [xathviar, Laserlord]
 commands:
   bingo:
@@ -10,9 +10,5 @@ commands:
     description: start a new game of bingo
   bingo reset:
     description: resets the items you alread collected
-  bingo join:
-    description: joins the game of bingo
-  bingo create:
-    description: creates a new game of bingo
   bingo board:
     description: displays the current bingo board

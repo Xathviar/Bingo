@@ -66,6 +66,8 @@ public final class Startup extends JavaPlugin {
                 scheduler.cancelTask(task.getTaskId());
             } else if (args[0].equals("board")) {
                 bingoData.displayBoard((Player) sender);
+            } else {
+                sendMessage((Player) sender, "That is not a valid bingo command");
             }
 
         } else {
