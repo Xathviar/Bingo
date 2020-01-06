@@ -23,7 +23,8 @@ public final class Startup extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        bingoData = new BingoData();
+        started = false;
+        bingoData = new BingoData(this);
         Bukkit.getServer().getPluginManager().registerEvents(new BingoListener(bingoData), this);
     }
 
@@ -57,9 +58,10 @@ public final class Startup extends JavaPlugin {
                         m[0] = 0;
                         h[0]++;
                     }
-                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Seit %s%02d:%02d:%02d%s in der Challenge", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
+                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Seit %s%02d:%02d:%02d%s im Bingo", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
                 }, 0, 20);
             } else if (args[0].equals("pause")) {
+                started = false;
                 scheduler.cancelTask(task.getTaskId());
             }
 
@@ -67,5 +69,19 @@ public final class Startup extends JavaPlugin {
             System.out.println("You need to be a player to execute this command.");
         }
         return false;
+    }
+
+    public int[] stopScheduler() {
+        int[] time = new int[3];
+        scheduler.cancelTask(task.getTaskId());
+        time[0] = h[0];
+        time[1] = m[0];
+        time[2] = s[0];
+        started = false;
+        return time;
+    }
+
+    public boolean hasStarted() {
+        return started;
     }
 }

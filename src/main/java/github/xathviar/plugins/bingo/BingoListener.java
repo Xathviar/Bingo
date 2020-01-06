@@ -35,7 +35,6 @@ public class BingoListener implements Listener {
 
     @EventHandler
     public void onChestShifting(InventoryClickEvent event) {
-        System.out.println("hehe");
         data.checkItems(event.getWhoClicked(), event.getWhoClicked().getInventory());
     }
 

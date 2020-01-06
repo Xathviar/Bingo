@@ -16,13 +16,16 @@ import static github.xathviar.plugins.bingo.HelperClass.sendMessage;
 
 public class BingoData {
 
-    public static HashMap<Player, List<Material>> entityBingoMap;
+    private static HashMap<Player, List<Material>> entityBingoMap;
 
-    public static List<Material> bingoItems;
+    private static List<Material> bingoItems;
 
-    public BingoData() {
+    private Startup startup;
+
+    public BingoData(Startup startup) {
         entityBingoMap = new HashMap<>();
         bingoItems = new ArrayList<>();
+        this.startup = startup;
         genItems();
     }
 
@@ -49,49 +52,59 @@ public class BingoData {
     }
 
     public void checkItem(Player entity, ItemStack item) {
-        if (bingoItems.contains(item.getType())
-                && !entityBingoMap.getOrDefault(entity, new ArrayList<Material>() {{
-            add(Material.BARRIER);
-        }}).contains(item.getType())) {
-            if (entityBingoMap.get(entity) != null) {
-                List<Material> itemstacks = entityBingoMap.get(entity);
-                itemstacks.add(item.getType());
-                entityBingoMap.put(entity, itemstacks);
-            } else {
-                List<Material> items = new ArrayList<>();
-                items.add(item.getType());
-                entityBingoMap.put(entity, items);
+        if (startup.hasStarted()) {
+            if (bingoItems.contains(item.getType())
+                    && !entityBingoMap.getOrDefault(entity, new ArrayList<Material>() {{
+                add(Material.BARRIER);
+            }}).contains(item.getType())) {
+                if (entityBingoMap.get(entity) != null) {
+                    List<Material> itemstacks = entityBingoMap.get(entity);
+                    itemstacks.add(item.getType());
+                    entityBingoMap.put(entity, itemstacks);
+                } else {
+                    List<Material> items = new ArrayList<>();
+                    items.add(item.getType());
+                    entityBingoMap.put(entity, items);
+                }
+                sendMessage(entity, ChatColor.YELLOW + item.getType().toString() + ChatColor.WHITE + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
             }
-            sendMessage(entity, ChatColor.YELLOW + item.getType().toString() + ChatColor.WHITE + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
+            checkWin(entity);
         }
-        checkWin(entity);
     }
 
     public void checkItems(Player entity, Inventory inventory) {
-        for (Material bingoItem : bingoItems) {
-            if (inventory.contains(bingoItem) && !entityBingoMap.getOrDefault(entity, new ArrayList<Material>() {{
-                add(Material.BARRIER);
-            }}).contains(bingoItem)) {
-                if (entityBingoMap.get(entity) != null) {
-                    List<Material> itemStacks = entityBingoMap.get(entity);
-                    itemStacks.add(bingoItem);
-                    entityBingoMap.put(entity, itemStacks);
-                } else {
-                    List<Material> itemstacks = new ArrayList<>();
-                    itemstacks.add(bingoItem);
-                    entityBingoMap.put(entity, itemstacks);
+        if (startup.hasStarted()) {
+            for (Material bingoItem : bingoItems) {
+                if (inventory.contains(bingoItem) && !entityBingoMap.getOrDefault(entity, new ArrayList<Material>() {{
+                    add(Material.BARRIER);
+                }}).contains(bingoItem)) {
+                    if (entityBingoMap.get(entity) != null) {
+                        List<Material> itemStacks = entityBingoMap.get(entity);
+                        itemStacks.add(bingoItem);
+                        entityBingoMap.put(entity, itemStacks);
+                    } else {
+                        List<Material> itemstacks = new ArrayList<>();
+                        itemstacks.add(bingoItem);
+                        entityBingoMap.put(entity, itemstacks);
+                    }
+                    sendMessage(entity, ChatColor.YELLOW + bingoItem.toString() + ChatColor.WHITE + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
                 }
-                sendMessage(entity, ChatColor.YELLOW + bingoItem.toString() + ChatColor.WHITE + " has been registered" + " (" + entityBingoMap.get(entity).size() + "/9)");
             }
+            checkWin(entity);
         }
-        checkWin(entity);
     }
 
     private void checkWin(Player entity) {
         if (entityBingoMap.get(entity) != null && entityBingoMap.get(entity).size() == 9) {
-            broadcastMessage(entity.getDisplayName() + " won the Bingo");
             genItems();
             entityBingoMap.clear();
+            int[] time = startup.stopScheduler();
+            if (time[0] != 0)
+                broadcastMessage(String.format("%s won the Bingo after %02d Hours, %02d Minutes, %02d Seconds.", entity.getDisplayName(), time[0], time[1], time[2]));
+            else if (time[1] != 0)
+                broadcastMessage(String.format("%s won the Bingo after %02d Minutes, %02d Seconds.", entity.getDisplayName(), time[1], time[2]));
+            else
+                broadcastMessage(String.format("%s won the Bingo after %02d Seconds.", entity.getDisplayName(), time[2]));
         }
     }
 
