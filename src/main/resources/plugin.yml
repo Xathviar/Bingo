@@ -12,3 +12,15 @@ commands:
     description: resets the items you alread collected
   bingo board:
     description: displays the current bingo board
+  heal:
+    description: heals players
+  feed:
+    description: feeds players
+  wc:
+    description: clears the weather and changes the time to day
+  gm1:
+    description: sets players to GameMode 1
+  gm0:
+    description: sets players to GameMode 0
+  rc:
+    description: reloads the server

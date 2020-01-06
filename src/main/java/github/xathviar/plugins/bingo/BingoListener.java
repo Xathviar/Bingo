@@ -42,7 +42,7 @@ public class BingoListener implements Listener {
     }
 
     @EventHandler
-    public void onInvetoryClose(InventoryCloseEvent event) {
+    public void onInventoryClose(InventoryCloseEvent event) {
         data.checkItems(event.getPlayer(), event.getPlayer().getInventory());
     }
 }

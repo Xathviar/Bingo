@@ -26,6 +26,12 @@ public final class Startup extends JavaPlugin {
         started = false;
         bingoData = new BingoData(this);
         Bukkit.getServer().getPluginManager().registerEvents(new BingoListener(bingoData), this);
+        this.getCommand("wc").setExecutor(new UtilsCommandExecutor(this));
+        this.getCommand("rc").setExecutor(new UtilsCommandExecutor(this));
+        this.getCommand("gm1").setExecutor(new UtilsCommandExecutor(this));
+        this.getCommand("gm0").setExecutor(new UtilsCommandExecutor(this));
+        this.getCommand("heal").setExecutor(new UtilsCommandExecutor(this));
+        this.getCommand("feed").setExecutor(new UtilsCommandExecutor(this));
     }
 
     @Override
