@@ -42,44 +42,51 @@ public final class Startup extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
-            if (args.length == 0) {
-                sender.sendMessage(ChatColor.AQUA + "[Bingo]" + ChatColor.WHITE + "What do you want to do? See '/bingo help' for more info");
-            } else if (args[0].equals("help")) {
-                sendMessage((Player) sender, "'/bingo start' starts a new game of bingo");
-                sendMessage((Player) sender, "'/bingo reset' reset the items you already have");
-                sendMessage((Player) sender, "'/bingo join' join the game of bingo");
-                sendMessage((Player) sender, "'/bingo create' create a game of bingo");
-                sendMessage((Player) sender, "'/bingo board' displays the current bingo board");
-            } else if (args[0].equals("reset") && sender.hasPermission("bingo.reset")) {
-                bingoData.resetEntity((Player) sender);
-                sendMessage((Player) sender, "Your items have been reset");
-            } else if (args[0].equals("start") && sender.hasPermission("bingo.start")) {
-                started = true;
-                task = scheduler.runTaskTimer(this, () -> {
-                    s[0]++;
-                    if (s[0] == 60) {
-                        s[0] = 0;
-                        m[0]++;
+            if (command.getName().equalsIgnoreCase("bingo")) {
+                if (args.length == 0) {
+                    sender.sendMessage(ChatColor.AQUA + "[Bingo]" + ChatColor.WHITE + "What do you want to do? See '/bingo help' for more info");
+                } else if (args[0].equalsIgnoreCase("help")) {
+                    sendMessage((Player) sender, "'/bingo start' starts a new game of bingo");
+                    sendMessage((Player) sender, "'/bingo reset' reset the items you already have");
+                    sendMessage((Player) sender, "'/bingo join' join the game of bingo");
+                    sendMessage((Player) sender, "'/bingo create' create a game of bingo");
+                    sendMessage((Player) sender, "'/bingo board' displays the current bingo board");
+                } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("bingo.reset")) {
+                    bingoData.resetEntity((Player) sender);
+                    sendMessage((Player) sender, "Your items have been reset");
+                } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start")) {
+                    started = true;
+                    task = scheduler.runTaskTimer(this, () -> {
+                        s[0]++;
+                        if (s[0] == 60) {
+                            s[0] = 0;
+                            m[0]++;
+                        }
+                        if (m[0] == 60) {
+                            m[0] = 0;
+                            h[0]++;
+                        }
+                        Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Seit %s%02d:%02d:%02d%s im Bingo", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
+                    }, 0, 20);
+                } else if (args[0].equalsIgnoreCase("pause") && sender.hasPermission("bingo.pause")) {
+                    started = false;
+                    scheduler.cancelTask(task.getTaskId());
+                } else if (args[0].equalsIgnoreCase("board")) {
+                    if (started) {
+                        bingoData.displayBoard((Player) sender);
+                    } else {
+                        sendMessage((Player) sender, "You cannot see the board if the game hasn't even started yet.");
                     }
-                    if (m[0] == 60) {
-                        m[0] = 0;
-                        h[0]++;
-                    }
-                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Seit %s%02d:%02d:%02d%s im Bingo", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
-                }, 0, 20);
-            } else if (args[0].equals("pause") && sender.hasPermission("bingo.pause")) {
-                started = false;
-                scheduler.cancelTask(task.getTaskId());
-            } else if (args[0].equals("board")) {
+                } else {
+                    sendMessage((Player) sender, "That is not a valid bingo command");
+                }
+            } else if (command.getName().equalsIgnoreCase("bb")) {
                 if (started) {
                     bingoData.displayBoard((Player) sender);
                 } else {
                     sendMessage((Player) sender, "You cannot see the board if the game hasn't even started yet.");
                 }
-            } else {
-                sendMessage((Player) sender, "That is not a valid bingo command");
             }
-
         } else {
             System.out.println("You need to be a player to execute this command.");
         }

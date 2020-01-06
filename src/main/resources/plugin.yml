@@ -4,6 +4,8 @@ main: github.xathviar.plugins.bingo.Startup
 api-version: "1.13"
 authors: [xathviar, Laserlord]
 commands:
+  bb:
+    description: shortform for  bingo board
   bingo:
     description: bingo for the current player
   bingo start:
