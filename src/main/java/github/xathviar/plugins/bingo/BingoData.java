@@ -509,6 +509,9 @@ public class BingoData {
         materials.remove(Material.PUFFERFISH_BUCKET);
         materials.remove(Material.PUFFERFISH_SPAWN_EGG);
         materials.remove(Material.PUMPKIN_STEM);
+        materials.remove(Material.PURPLE_BANNER);
+        materials.remove(Material.PURPLE_WALL_BANNER);
+        materials.remove(Material.PURPLE_SHULKER_BOX);
 
         while (items.size() < 9) {
             items.add(materials.get(new Random().nextInt(materials.size())));
