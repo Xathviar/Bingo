@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -28,7 +29,7 @@ public class BingoData {
         this.startup = startup;
         genItems();
     }
-    
+
 
     public void checkItem(HumanEntity entity, ItemStack item) {
         checkItem((Player) entity, item);
@@ -100,27 +101,19 @@ public class BingoData {
     }
 
     public void displayBoard(Player entity) {
-        Inventory inventory = Bukkit.createInventory(entity, 5 * 9, "Bingo Board");
-        for (int i = 0; i < 9; i++) {
-            inventory.setItem(i, new ItemStack(Material.LIME_STAINED_GLASS_PANE));
-        }
-        for (int i = 0; i < 9; i++) {
-            inventory.setItem(i + 9 * 4, new ItemStack(Material.LIME_STAINED_GLASS_PANE));
-        }
+        Inventory inventory = Bukkit.createInventory(entity, InventoryType.DROPPER, "Bingo Board");
 
         int counter = 0;
-        for (int i = 1; i < 4; i++) {
-            for (int j = 3; j < 6; j++) {
-                ItemStack itemStack = new ItemStack(bingoItems.get(counter));
-                itemStack.setLore(Collections.singletonList(ChatColor.RED + "Item not found" + ChatColor.RESET));
-                if (entityBingoMap.get(entity) != null && entityBingoMap.get(entity).contains(bingoItems.get(counter))) {
-                    itemStack.setLore(Collections.singletonList(ChatColor.GREEN + "Item found" + ChatColor.RESET));
-                    itemStack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
-                    itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-                inventory.setItem(9 * i + j, itemStack);
-                counter++;
+        for (int i = 0; i < 9; i++) {
+            ItemStack itemStack = new ItemStack(bingoItems.get(counter));
+            itemStack.setLore(Collections.singletonList(ChatColor.RED + "Item not found" + ChatColor.RESET));
+            if (entityBingoMap.get(entity) != null && entityBingoMap.get(entity).contains(bingoItems.get(counter))) {
+                itemStack.setLore(Collections.singletonList(ChatColor.GREEN + "Item found" + ChatColor.RESET));
+                itemStack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
+                itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
+            inventory.setItem(i, itemStack);
+            counter++;
         }
         entity.openInventory(inventory);
     }
