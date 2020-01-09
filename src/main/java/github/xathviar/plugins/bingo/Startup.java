@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
+import static github.xathviar.plugins.bingo.HelperClass.broadcastMessage;
 import static github.xathviar.plugins.bingo.HelperClass.sendMessage;
 
 public final class Startup extends JavaPlugin {
@@ -52,11 +53,22 @@ public final class Startup extends JavaPlugin {
                     sendMessage((Player) sender, "'/bingo create' create a game of bingo");
                     sendMessage((Player) sender, "'/bingo board' displays the current bingo board");
                 } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("bingo.reset")) {
-                    bingoData.reset();
-                    started = false;
-                    scheduler.cancelTask(task.getTaskId());
-                    sendMessage((Player) sender, "Your items have been reset");
-                } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start")) {
+                    if (task != null) {
+                        bingoData.reset();
+                        started = false;
+                        scheduler.cancelTask(task.getTaskId());
+                        broadcastMessage("The bingo game has been reseted");
+                        s[0] = 0;
+                        m[0] = 0;
+                        h[0] = 0;
+                    } else {
+                        bingoData.reset();
+                        broadcastMessage("The bingo game has been reseted");
+                    }
+
+
+                } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start") && !started) {
+                    broadcastMessage("The bingo game has been started. Good luck everyone");
                     started = true;
                     task = scheduler.runTaskTimer(this, () -> {
                         s[0]++;

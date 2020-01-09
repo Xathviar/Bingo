@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -100,27 +101,19 @@ public class BingoData {
     }
 
     public void displayBoard(Player entity) {
-        Inventory inventory = Bukkit.createInventory(entity, 5 * 9, "Bingo Board");
-        for (int i = 0; i < 9; i++) {
-            inventory.setItem(i, new ItemStack(Material.LIME_STAINED_GLASS_PANE));
-        }
-        for (int i = 0; i < 9; i++) {
-            inventory.setItem(i + 9 * 4, new ItemStack(Material.LIME_STAINED_GLASS_PANE));
-        }
+        Inventory inventory = Bukkit.createInventory(entity, InventoryType.DROPPER, "Bingo Board");
 
         int counter = 0;
-        for (int i = 1; i < 4; i++) {
-            for (int j = 3; j < 6; j++) {
-                ItemStack itemStack = new ItemStack(bingoItems.get(counter));
-                itemStack.setLore(Collections.singletonList(ChatColor.RED + "Item not found" + ChatColor.RESET));
-                if (entityBingoMap.get(entity) != null && entityBingoMap.get(entity).contains(bingoItems.get(counter))) {
-                    itemStack.setLore(Collections.singletonList(ChatColor.GREEN + "Item found" + ChatColor.RESET));
-                    itemStack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
-                    itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
-                inventory.setItem(9 * i + j, itemStack);
-                counter++;
+        for (int i = 0; i < 9; i++) {
+            ItemStack itemStack = new ItemStack(bingoItems.get(counter));
+            itemStack.setLore(Collections.singletonList(ChatColor.RED + "Item not found" + ChatColor.RESET));
+            if (entityBingoMap.get(entity) != null && entityBingoMap.get(entity).contains(bingoItems.get(counter))) {
+                itemStack.setLore(Collections.singletonList(ChatColor.GREEN + "Item found" + ChatColor.RESET));
+                itemStack.addUnsafeEnchantment(Enchantment.DAMAGE_ALL, 1);
+                itemStack.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
+            inventory.setItem(i, itemStack);
+            counter++;
         }
         entity.openInventory(inventory);
     }
@@ -128,7 +121,7 @@ public class BingoData {
     public void genItems() {
         Set<Material> items = new HashSet<>();
         List<Material> materials = new ArrayList<>(Arrays.asList(Material.class.getEnumConstants()));
-        System.out.println(materials.size());
+        materials.removeIf(n -> n.toString().startsWith("LEGACY"));
         materials.remove(Material.AIR);
         materials.remove(Material.ATTACHED_MELON_STEM);
         materials.remove(Material.ATTACHED_PUMPKIN_STEM);
@@ -152,6 +145,7 @@ public class BingoData {
         materials.remove(Material.BRAIN_CORAL_BLOCK);
         materials.remove(Material.BRAIN_CORAL_FAN);
         materials.remove(Material.BRAIN_CORAL_WALL_FAN);
+        materials.remove(Material.BREWING_STAND);
         materials.remove(Material.BRICKS);
         materials.remove(Material.BROWN_BANNER);
         materials.remove(Material.BROWN_SHULKER_BOX);
@@ -169,6 +163,7 @@ public class BingoData {
         materials.remove(Material.CHAINMAIL_BOOTS);
         materials.remove(Material.CHAINMAIL_LEGGINGS);
         materials.remove(Material.CHAINMAIL_CHESTPLATE);
+        materials.remove(Material.CHISELED_QUARTZ_BLOCK);
         materials.remove(Material.CHAINMAIL_HELMET);
         materials.remove(Material.CHICKEN_SPAWN_EGG);
         materials.remove(Material.CHIPPED_ANVIL);
@@ -453,6 +448,10 @@ public class BingoData {
         materials.remove(Material.REDSTONE_ORE);
         materials.remove(Material.REDSTONE_WALL_TORCH);
         materials.remove(Material.REDSTONE_WIRE);
+        materials.remove(Material.QUARTZ_SLAB);
+        materials.remove(Material.QUARTZ_STAIRS);
+        materials.remove(Material.QUARTZ_PILLAR);
+        materials.remove(Material.QUARTZ_BLOCK);
         materials.remove(Material.REPEATING_COMMAND_BLOCK);
         materials.remove(Material.PACKED_ICE);
         materials.remove(Material.PANDA_SPAWN_EGG);
@@ -510,6 +509,9 @@ public class BingoData {
         materials.remove(Material.PUFFERFISH_BUCKET);
         materials.remove(Material.PUFFERFISH_SPAWN_EGG);
         materials.remove(Material.PUMPKIN_STEM);
+        materials.remove(Material.PURPLE_BANNER);
+        materials.remove(Material.PURPLE_WALL_BANNER);
+        materials.remove(Material.PURPLE_SHULKER_BOX);
 
         while (items.size() < 9) {
             items.add(materials.get(new Random().nextInt(materials.size())));
