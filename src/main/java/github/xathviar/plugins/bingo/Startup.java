@@ -4,11 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -76,11 +76,25 @@ public final class Startup extends JavaPlugin {
 
 
                 } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start") && !started && !paused) {
-                    int x = (int) (Math.random() * 10000 * Math.random());
-                    int y = 100;
-                    int z = (int) (Math.random() * 10000 * Math.random());
+                    Location l;
                     Player p = (Player) sender;
-                    Location l = new Location(p.getWorld(), x, y, z);
+                    int x;
+                    int y = 150;
+                    int z;
+                    do {
+                        x = (int) (Math.random() * 10000 * Math.random());
+                        z = (int) (Math.random() * 10000 * Math.random());
+                    } while (p.getWorld().getBiome(x, y, z) == Biome.OCEAN
+                            || p.getWorld().getBiome(x, y, z) == Biome.COLD_OCEAN
+                            || p.getWorld().getBiome(x, y, z) == Biome.FROZEN_OCEAN
+                            || p.getWorld().getBiome(x, y, z) == Biome.LUKEWARM_OCEAN
+                            || p.getWorld().getBiome(x, y, z) == Biome.WARM_OCEAN
+                            || p.getWorld().getBiome(x, y, z) == Biome.DEEP_LUKEWARM_OCEAN
+                            || p.getWorld().getBiome(x, y, z) == Biome.DEEP_COLD_OCEAN
+                            || p.getWorld().getBiome(x, y, z) == Biome.DEEP_FROZEN_OCEAN
+                            || p.getWorld().getBiome(x, y, z) == Biome.DEEP_WARM_OCEAN
+                            || p.getWorld().getBiome(x, y, z) == Biome.DEEP_OCEAN);
+                    l = new Location(p.getWorld(), x, y, z);
                     p.getWorld().setSpawnLocation(l);
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                         onlinePlayer.setHealth(20);

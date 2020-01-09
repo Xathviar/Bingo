@@ -1,5 +1,6 @@
 package github.xathviar.plugins.bingo;
 
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,7 +11,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -64,6 +64,8 @@ public class BingoListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         if (data.getStartup().isPaused()) {
             event.getPlayer().setGameMode(GameMode.SPECTATOR);
+        }
+    }
 
     @EventHandler
     public void onCustomBingoBoardClose(InventoryCloseEvent event) {

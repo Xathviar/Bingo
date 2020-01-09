@@ -14,6 +14,10 @@ commands:
     description: resets the items you alread collected
   bingo board:
     description: displays the current bingo board
+  bingo pause:
+    description: lets you pause the current game
+  bingo resume:
+    description: lets you resume the paused game
   bingo custom:
     description: lets you create a custom bingo board
   heal:
