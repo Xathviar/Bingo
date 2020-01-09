@@ -2,10 +2,14 @@ package github.xathviar.plugins.bingo;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -18,6 +22,7 @@ public final class Startup extends JavaPlugin {
     private final int[] s = {0};
     private BingoData bingoData;
     private boolean started;
+    private boolean paused;
     private BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
     private BukkitTask task;
 
@@ -25,6 +30,7 @@ public final class Startup extends JavaPlugin {
     @Override
     public void onEnable() {
         started = false;
+        paused = false;
         bingoData = new BingoData(this);
         Bukkit.getServer().getPluginManager().registerEvents(new BingoListener(bingoData), this);
         this.getCommand("wc").setExecutor(new UtilsCommandExecutor(this));
@@ -49,13 +55,13 @@ public final class Startup extends JavaPlugin {
                 } else if (args[0].equalsIgnoreCase("help")) {
                     sendMessage((Player) sender, "'/bingo start' starts a new game of bingo");
                     sendMessage((Player) sender, "'/bingo reset' reset the items you already have");
-                    sendMessage((Player) sender, "'/bingo join' join the game of bingo");
-                    sendMessage((Player) sender, "'/bingo create' create a game of bingo");
                     sendMessage((Player) sender, "'/bingo board' displays the current bingo board");
                 } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("bingo.reset")) {
                     if (task != null) {
                         bingoData.reset();
                         started = false;
+                        paused = false;
+                        Bukkit.getOnlinePlayers().forEach(n -> n.setGameMode(GameMode.SURVIVAL));
                         scheduler.cancelTask(task.getTaskId());
                         broadcastMessage("The bingo game has been reseted");
                         s[0] = 0;
@@ -67,23 +73,36 @@ public final class Startup extends JavaPlugin {
                     }
 
 
-                } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start") && !started) {
+                } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start") && !started && !paused) {
+                    int x = (int) (Math.random() * 10000 * Math.random());
+                    int y = 100;
+                    int z = (int) (Math.random() * 10000 * Math.random());
+                    Player p = (Player) sender;
+                    Location l = new Location(p.getWorld(), x, y, z);
+                    p.getWorld().setSpawnLocation(l);
+                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                        onlinePlayer.setHealth(20);
+                        onlinePlayer.setFoodLevel(20);
+                        onlinePlayer.setSaturation(1);
+                        onlinePlayer.getInventory().clear();
+                        onlinePlayer.setGameMode(GameMode.SURVIVAL);
+                        onlinePlayer.teleport(new Location(onlinePlayer.getWorld(), x, y, z));
+                        onlinePlayer.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 255, 10));
+                    }
                     broadcastMessage("The bingo game has been started. Good luck everyone");
                     started = true;
-                    task = scheduler.runTaskTimer(this, () -> {
-                        s[0]++;
-                        if (s[0] == 60) {
-                            s[0] = 0;
-                            m[0]++;
-                        }
-                        if (m[0] == 60) {
-                            m[0] = 0;
-                            h[0]++;
-                        }
-                        Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Seit %s%02d:%02d:%02d%s im Bingo", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
-                    }, 0, 20);
+                    startTask();
+                } else if (args[0].equalsIgnoreCase("resume") && sender.hasPermission("bingo.resume")) {
+                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                        onlinePlayer.setGameMode(GameMode.SURVIVAL);
+                    }
+                    paused = false;
+                    startTask();
                 } else if (args[0].equalsIgnoreCase("pause") && sender.hasPermission("bingo.pause")) {
-                    started = false;
+                    paused = true;
+                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                        onlinePlayer.setGameMode(GameMode.SPECTATOR);
+                    }
                     scheduler.cancelTask(task.getTaskId());
                 } else if (args[0].equalsIgnoreCase("board")) {
                     if (started) {
@@ -107,6 +126,21 @@ public final class Startup extends JavaPlugin {
         return false;
     }
 
+    private void startTask() {
+        task = scheduler.runTaskTimer(this, () -> {
+            s[0]++;
+            if (s[0] == 60) {
+                s[0] = 0;
+                m[0]++;
+            }
+            if (m[0] == 60) {
+                m[0] = 0;
+                h[0]++;
+            }
+            Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Seit %s%02d:%02d:%02d%s im Bingo", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
+        }, 0, 20);
+    }
+
     public int[] stopScheduler() {
         int[] time = new int[3];
         scheduler.cancelTask(task.getTaskId());
@@ -119,5 +153,9 @@ public final class Startup extends JavaPlugin {
 
     public boolean hasStarted() {
         return started;
+    }
+
+    public boolean isPaused() {
+        return paused;
     }
 }

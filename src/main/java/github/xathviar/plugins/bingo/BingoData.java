@@ -23,11 +23,13 @@ public class BingoData {
 
     private Startup startup;
 
+    private boolean netherEnabled = false;
+
     public BingoData(Startup startup) {
         entityBingoMap = new HashMap<>();
         bingoItems = new ArrayList<>();
         this.startup = startup;
-        genItems();
+        genItems(netherEnabled);
     }
 
 
@@ -84,7 +86,7 @@ public class BingoData {
 
     private void checkWin(Player entity) {
         if (entityBingoMap.get(entity) != null && entityBingoMap.get(entity).size() == 9) {
-            genItems();
+            genItems(netherEnabled);
             entityBingoMap.clear();
             int[] time = startup.stopScheduler();
             if (time[0] != 0)
@@ -118,10 +120,39 @@ public class BingoData {
         entity.openInventory(inventory);
     }
 
-    public void genItems() {
+    public void genItems(boolean netherAvailable) {
         Set<Material> items = new HashSet<>();
         List<Material> materials = new ArrayList<>(Arrays.asList(Material.class.getEnumConstants()));
         materials.removeIf(n -> n.toString().startsWith("LEGACY"));
+        if (!netherAvailable) {
+            materials.remove(Material.NETHERRACK);
+            materials.remove(Material.NETHER_BRICK);
+            materials.remove(Material.NETHER_BRICK_FENCE);
+            materials.remove(Material.NETHER_BRICK_SLAB);
+            materials.remove(Material.NETHER_BRICK_STAIRS);
+            materials.remove(Material.NETHER_BRICK_WALL);
+            materials.remove(Material.NETHER_BRICKS);
+            materials.remove(Material.NETHER_PORTAL);
+            materials.remove(Material.NETHER_QUARTZ_ORE);
+            materials.remove(Material.NETHER_STAR);
+            materials.remove(Material.NETHER_WART);
+            materials.remove(Material.NETHER_WART_BLOCK);
+            materials.remove(Material.QUARTZ_SLAB);
+            materials.remove(Material.QUARTZ_STAIRS);
+            materials.remove(Material.QUARTZ_PILLAR);
+            materials.remove(Material.QUARTZ_BLOCK);
+            materials.remove(Material.CHISELED_QUARTZ_BLOCK);
+            materials.remove(Material.BLAZE_POWDER);
+            materials.remove(Material.BLAZE_ROD);
+            materials.remove(Material.GHAST_TEAR);
+            materials.remove(Material.MAGMA_BLOCK);
+            materials.remove(Material.MAGMA_CREAM);
+            materials.remove(Material.FIRE_CHARGE);
+            materials.remove(Material.RED_NETHER_BRICK_SLAB);
+            materials.remove(Material.RED_NETHER_BRICK_STAIRS);
+            materials.remove(Material.RED_NETHER_BRICK_WALL);
+            materials.remove(Material.RED_NETHER_BRICKS);
+        }
         materials.remove(Material.AIR);
         materials.remove(Material.ATTACHED_MELON_STEM);
         materials.remove(Material.ATTACHED_PUMPKIN_STEM);
@@ -135,8 +166,6 @@ public class BingoData {
         materials.remove(Material.BLACK_SHULKER_BOX);
         materials.remove(Material.BLACK_BANNER);
         materials.remove(Material.BLACK_WALL_BANNER);
-        materials.remove(Material.BLAZE_POWDER);
-        materials.remove(Material.BLAZE_ROD);
         materials.remove(Material.BLAZE_SPAWN_EGG);
         materials.remove(Material.BLUE_BANNER);
         materials.remove(Material.BLUE_ICE);
@@ -163,7 +192,6 @@ public class BingoData {
         materials.remove(Material.CHAINMAIL_BOOTS);
         materials.remove(Material.CHAINMAIL_LEGGINGS);
         materials.remove(Material.CHAINMAIL_CHESTPLATE);
-        materials.remove(Material.CHISELED_QUARTZ_BLOCK);
         materials.remove(Material.CHAINMAIL_HELMET);
         materials.remove(Material.CHICKEN_SPAWN_EGG);
         materials.remove(Material.CHIPPED_ANVIL);
@@ -241,7 +269,6 @@ public class BingoData {
         materials.remove(Material.FIRE);
         materials.remove(Material.FIREWORK_ROCKET);
         materials.remove(Material.FIREWORK_STAR);
-        materials.remove(Material.FIRE_CHARGE);
         materials.remove(Material.FIRE_CORAL);
         materials.remove(Material.FIRE_CORAL_BLOCK);
         materials.remove(Material.FIRE_CORAL_FAN);
@@ -250,7 +277,6 @@ public class BingoData {
         materials.remove(Material.FOX_SPAWN_EGG);
         materials.remove(Material.FROSTED_ICE);
         materials.remove(Material.GHAST_SPAWN_EGG);
-        materials.remove(Material.GHAST_TEAR);
         materials.remove(Material.GLOBE_BANNER_PATTERN);
         materials.remove(Material.GLOWSTONE);
         materials.remove(Material.GLOWSTONE_DUST);
@@ -303,8 +329,6 @@ public class BingoData {
         materials.remove(Material.MAGENTA_SHULKER_BOX);
         materials.remove(Material.MAGENTA_WALL_BANNER);
         materials.remove(Material.MAP);
-        materials.remove(Material.MAGMA_BLOCK);
-        materials.remove(Material.MAGMA_CREAM);
         materials.remove(Material.MAGMA_CUBE_SPAWN_EGG);
         materials.remove(Material.MOJANG_BANNER_PATTERN);
         materials.remove(Material.MOOSHROOM_SPAWN_EGG);
@@ -332,18 +356,6 @@ public class BingoData {
         materials.remove(Material.MUSIC_DISC_WARD);
         materials.remove(Material.NAME_TAG);
         materials.remove(Material.NAUTILUS_SHELL);
-        materials.remove(Material.NETHERRACK);
-        materials.remove(Material.NETHER_BRICK);
-        materials.remove(Material.NETHER_BRICK_FENCE);
-        materials.remove(Material.NETHER_BRICK_SLAB);
-        materials.remove(Material.NETHER_BRICK_STAIRS);
-        materials.remove(Material.NETHER_BRICK_WALL);
-        materials.remove(Material.NETHER_BRICKS);
-        materials.remove(Material.NETHER_PORTAL);
-        materials.remove(Material.NETHER_QUARTZ_ORE);
-        materials.remove(Material.NETHER_STAR);
-        materials.remove(Material.NETHER_WART);
-        materials.remove(Material.NETHER_WART_BLOCK);
         materials.remove(Material.OBSERVER);
         materials.remove(Material.OAK_WALL_SIGN);
         materials.remove(Material.OCELOT_SPAWN_EGG);
@@ -436,10 +448,6 @@ public class BingoData {
         materials.remove(Material.RAVAGER_SPAWN_EGG);
         materials.remove(Material.RED_BANNER);
         materials.remove(Material.RED_MUSHROOM_BLOCK);
-        materials.remove(Material.RED_NETHER_BRICK_SLAB);
-        materials.remove(Material.RED_NETHER_BRICK_STAIRS);
-        materials.remove(Material.RED_NETHER_BRICK_WALL);
-        materials.remove(Material.RED_NETHER_BRICKS);
         materials.remove(Material.RED_SAND);
         materials.remove(Material.RED_SANDSTONE_SLAB);
         materials.remove(Material.RED_SANDSTONE_STAIRS);
@@ -448,10 +456,6 @@ public class BingoData {
         materials.remove(Material.REDSTONE_ORE);
         materials.remove(Material.REDSTONE_WALL_TORCH);
         materials.remove(Material.REDSTONE_WIRE);
-        materials.remove(Material.QUARTZ_SLAB);
-        materials.remove(Material.QUARTZ_STAIRS);
-        materials.remove(Material.QUARTZ_PILLAR);
-        materials.remove(Material.QUARTZ_BLOCK);
         materials.remove(Material.REPEATING_COMMAND_BLOCK);
         materials.remove(Material.PACKED_ICE);
         materials.remove(Material.PANDA_SPAWN_EGG);
@@ -523,7 +527,19 @@ public class BingoData {
     }
 
     public void reset() {
-        genItems();
+        genItems(netherEnabled);
         entityBingoMap.clear();
+    }
+
+    public boolean isNetherEnabled() {
+        return netherEnabled;
+    }
+
+    public void setNetherEnabled(boolean netherEnabled) {
+        this.netherEnabled = netherEnabled;
+    }
+
+    public Startup getStartup() {
+        return startup;
     }
 }
