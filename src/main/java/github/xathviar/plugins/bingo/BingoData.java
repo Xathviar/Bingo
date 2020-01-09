@@ -3,9 +3,14 @@ package github.xathviar.plugins.bingo;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -524,6 +529,13 @@ public class BingoData {
 
         bingoItems.clear();
         bingoItems.addAll(items);
+    }
+
+    public void customBingoBoard(Inventory customItems) {
+        bingoItems.clear();
+        for (ItemStack customItem : customItems) {
+            bingoItems.add(customItem.getType());
+        }
     }
 
     public void reset() {
