@@ -28,7 +28,7 @@ public class BingoData {
         this.startup = startup;
         genItems();
     }
-    
+
 
     public void checkItem(HumanEntity entity, ItemStack item) {
         checkItem((Player) entity, item);
@@ -128,6 +128,7 @@ public class BingoData {
     public void genItems() {
         Set<Material> items = new HashSet<>();
         List<Material> materials = new ArrayList<>(Arrays.asList(Material.class.getEnumConstants()));
+        System.out.println(materials.size());
         materials.remove(Material.AIR);
         materials.remove(Material.ATTACHED_MELON_STEM);
         materials.remove(Material.ATTACHED_PUMPKIN_STEM);
@@ -513,6 +514,7 @@ public class BingoData {
         while (items.size() < 9) {
             items.add(materials.get(new Random().nextInt(materials.size())));
         }
+        System.out.println(materials.size());
 
         bingoItems.clear();
         bingoItems.addAll(items);
