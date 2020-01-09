@@ -5,6 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
@@ -57,13 +59,13 @@ public final class Startup extends JavaPlugin {
                         bingoData.reset();
                         started = false;
                         scheduler.cancelTask(task.getTaskId());
-                        broadcastMessage("The bingo game has been reseted");
+                        broadcastMessage("The bingo game has been reset");
                         s[0] = 0;
                         m[0] = 0;
                         h[0] = 0;
                     } else {
                         bingoData.reset();
-                        broadcastMessage("The bingo game has been reseted");
+                        broadcastMessage("The bingo game has been reset");
                     }
 
 
@@ -90,6 +92,13 @@ public final class Startup extends JavaPlugin {
                         bingoData.displayBoard((Player) sender);
                     } else {
                         sendMessage((Player) sender, "You cannot see the board if the game hasn't even started yet.");
+                    }
+                } else if (args[0].equalsIgnoreCase("custom")) {
+                    if (!started) {
+                        Player player = (Player) sender;
+                        player.openInventory(Bukkit.createInventory((Player) sender, InventoryType.DROPPER, "Custom Bingo Board"));
+                    } else {
+                        sendMessage((Player) sender, "You cannot set the board if a game is running.");
                     }
                 } else {
                     sendMessage((Player) sender, "That is not a valid bingo command");
