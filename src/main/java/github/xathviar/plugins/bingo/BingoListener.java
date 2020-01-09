@@ -67,6 +67,7 @@ public class BingoListener implements Listener {
                 }
                 if (items.size() == 9) {
                     data.customBingoBoard(inventory);
+                    sendMessage((Player) event.getPlayer(), "You successfully set a custom bingo board.");
                 } else {
                     sendMessage((Player) event.getPlayer(), "You have to insert 9 different items.");
                 }
