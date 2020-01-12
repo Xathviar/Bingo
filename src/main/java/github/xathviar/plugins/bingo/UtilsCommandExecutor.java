@@ -73,7 +73,7 @@ public class UtilsCommandExecutor implements CommandExecutor {
                 player.getLocation().getWorld().setTime(1000);
                 player.getLocation().getWorld().setStorm(false);
             } else if (cmd.getName().equalsIgnoreCase("rc")) {
-                Bukkit.reload();
+                ((Player) sender).chat("/reload confirm");
             }
 
         } else {
