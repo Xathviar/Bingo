@@ -58,12 +58,12 @@ public class BingoListener implements Listener {
 
     @EventHandler
     public void onPlayerBucketFillEvent(PlayerBucketFillEvent event) {
-        data.checkItems(event.getPlayer(), event.getPlayer().getInventory());
+        data.checkItem(event.getPlayer(), event.getItemStack());
     }
 
     @EventHandler
     public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent event) {
-        data.checkItems(event.getPlayer(), event.getPlayer().getInventory());
+        data.checkItem(event.getPlayer(), event.getItemStack());
     }
 
     @EventHandler
