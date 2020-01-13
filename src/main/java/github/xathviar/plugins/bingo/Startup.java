@@ -174,6 +174,12 @@ public final class Startup extends JavaPlugin {
         return time;
     }
 
+    public void resetTimer() {
+        h[0] = 0;
+        m[0] = 0;
+        s[0] = 0;
+    }
+
     public boolean hasStarted() {
         return started;
     }
