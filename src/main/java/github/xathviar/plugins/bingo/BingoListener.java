@@ -9,6 +9,8 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.Inventory;
@@ -51,6 +53,16 @@ public class BingoListener implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
+        data.checkItems(event.getPlayer(), event.getPlayer().getInventory());
+    }
+
+    @EventHandler
+    public void onPlayerBucketFillEvent(PlayerBucketFillEvent event) {
+        data.checkItems(event.getPlayer(), event.getPlayer().getInventory());
+    }
+
+    @EventHandler
+    public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent event) {
         data.checkItems(event.getPlayer(), event.getPlayer().getInventory());
     }
 
