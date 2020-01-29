@@ -1,5 +1,6 @@
 package github.xathviar.plugins.bingo;
 
+import com.destroystokyo.paper.Title;
 import org.bukkit.*;
 import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
@@ -13,6 +14,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.util.Random;
 
 import static github.xathviar.plugins.bingo.HelperClass.broadcastMessage;
 import static github.xathviar.plugins.bingo.HelperClass.sendMessage;
@@ -58,23 +60,30 @@ public final class Startup extends JavaPlugin {
                     sendMessage((Player) sender, "'/bingo reset' reset the items you already have");
                     sendMessage((Player) sender, "'/bingo board' displays the current bingo board");
                 } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("bingo.reset")) {
-                    if (task != null) {
+                    if (started) {
+                        if (task != null) {
+                            started = false;
+                            paused = false;
+                            Bukkit.getOnlinePlayers().forEach(n -> n.setGameMode(GameMode.SURVIVAL));
+                            scheduler.cancelTask(task.getTaskId());
+                            s[0] = 0;
+                            m[0] = 0;
+                            h[0] = 0;
+                        }
                         bingoData.reset();
-                        started = false;
-                        paused = false;
-                        Bukkit.getOnlinePlayers().forEach(n -> n.setGameMode(GameMode.SURVIVAL));
-                        scheduler.cancelTask(task.getTaskId());
                         broadcastMessage("The bingo game has been reset");
-                        s[0] = 0;
-                        m[0] = 0;
-                        h[0] = 0;
+                        Bukkit.getOnlinePlayers().forEach(n -> n.setBedSpawnLocation(Bukkit.getWorld("world").getSpawnLocation(), false));
+                        Bukkit.getOnlinePlayers().forEach(n -> n.setHealth(0.0));
+                        deleteWorld(Bukkit.getWorld("BingoWorld").getWorldFolder());
                     } else {
-                        bingoData.reset();
-                        broadcastMessage("The bingo game has been reset");
+                        broadcastMessage("There is no bingo game to reset");
                     }
-
-
-                } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start") && !started && !paused) {
+                } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start") && !paused) {
+                    if (started) {
+                        broadcastMessage("There is already a running game.");
+                        return true;
+                    }
+                    started = true;
                     Location l;
                     Player p = (Player) sender;
                     WorldCreator wc = new WorldCreator("BingoWorld")
@@ -99,17 +108,26 @@ public final class Startup extends JavaPlugin {
                             || p.getWorld().getBiome(x, y, z) == Biome.DEEP_OCEAN);
                     l = new Location(bingoWorld, x, y, z);
                     bingoWorld.setSpawnLocation(l);
+                    while (!bingoWorld.isChunkGenerated(l.getChunk().getChunkKey())) {
+                        try {
+                            Title title = new Title("Please wait while the Map is loading", "", 0, 1000, 0);
+                            Bukkit.getOnlinePlayers().forEach(n -> n.sendTitle(title));
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                         onlinePlayer.setHealth(20);
                         onlinePlayer.setFoodLevel(20);
                         onlinePlayer.setSaturation(1);
                         onlinePlayer.getInventory().clear();
                         onlinePlayer.setGameMode(GameMode.SURVIVAL);
-                        onlinePlayer.teleport(new Location(bingoWorld, x, y, z));
+                        onlinePlayer.teleport(bingoWorld.getSpawnLocation());
+                        onlinePlayer.setBedSpawnLocation(bingoWorld.getSpawnLocation(), true);
                         onlinePlayer.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 255, 10));
                     }
                     broadcastMessage("The bingo game has been started. Good luck everyone");
-                    started = true;
                     startTask();
                 } else if (args[0].equalsIgnoreCase("resume") && sender.hasPermission("bingo.resume")) {
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
@@ -193,19 +211,18 @@ public final class Startup extends JavaPlugin {
 
 
     public static boolean deleteWorld(File path) {
-        if(path.exists()) {
+        if (path.exists()) {
             File files[] = path.listFiles();
-            for(int i=0; i<files.length; i++) {
-                if(files[i].isDirectory()) {
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
                     deleteWorld(files[i]);
                 } else {
                     files[i].delete();
                 }
             }
         }
-        return(path.delete());
+        return (path.delete());
     }
-
 
 
 }
