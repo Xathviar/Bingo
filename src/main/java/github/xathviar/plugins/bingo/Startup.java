@@ -1,6 +1,9 @@
 package github.xathviar.plugins.bingo;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,8 +14,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
-
-import java.io.File;
 
 import static github.xathviar.plugins.bingo.HelperClass.broadcastMessage;
 import static github.xathviar.plugins.bingo.HelperClass.sendMessage;
@@ -77,17 +78,13 @@ public final class Startup extends JavaPlugin {
                 } else if (args[0].equalsIgnoreCase("start") && sender.hasPermission("bingo.start") && !started && !paused) {
                     Location l;
                     Player p = (Player) sender;
-                    WorldCreator wc = new WorldCreator("BingoWorld")
-                            .generateStructures(true)
-                            .type(WorldType.NORMAL);
-                    World bingoWorld = Bukkit.getServer().createWorld(wc);
                     int x;
                     int y = 150;
                     int z;
                     do {
                         x = (int) (Math.random() * 10000 * Math.random());
                         z = (int) (Math.random() * 10000 * Math.random());
-                    } while (bingoWorld.getBiome(x, y, z) == Biome.OCEAN
+                    } while (p.getWorld().getBiome(x, y, z) == Biome.OCEAN
                             || p.getWorld().getBiome(x, y, z) == Biome.COLD_OCEAN
                             || p.getWorld().getBiome(x, y, z) == Biome.FROZEN_OCEAN
                             || p.getWorld().getBiome(x, y, z) == Biome.LUKEWARM_OCEAN
@@ -97,15 +94,15 @@ public final class Startup extends JavaPlugin {
                             || p.getWorld().getBiome(x, y, z) == Biome.DEEP_FROZEN_OCEAN
                             || p.getWorld().getBiome(x, y, z) == Biome.DEEP_WARM_OCEAN
                             || p.getWorld().getBiome(x, y, z) == Biome.DEEP_OCEAN);
-                    l = new Location(bingoWorld, x, y, z);
-                    bingoWorld.setSpawnLocation(l);
+                    l = new Location(p.getWorld(), x, y, z);
+                    p.getWorld().setSpawnLocation(l);
                     for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
                         onlinePlayer.setHealth(20);
                         onlinePlayer.setFoodLevel(20);
                         onlinePlayer.setSaturation(1);
                         onlinePlayer.getInventory().clear();
                         onlinePlayer.setGameMode(GameMode.SURVIVAL);
-                        onlinePlayer.teleport(new Location(bingoWorld, x, y, z));
+                        onlinePlayer.teleport(new Location(onlinePlayer.getWorld(), x, y, z));
                         onlinePlayer.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 255, 10));
                     }
                     broadcastMessage("The bingo game has been started. Good luck everyone");
@@ -190,22 +187,4 @@ public final class Startup extends JavaPlugin {
     public boolean isPaused() {
         return paused;
     }
-
-
-    public static boolean deleteWorld(File path) {
-        if(path.exists()) {
-            File files[] = path.listFiles();
-            for(int i=0; i<files.length; i++) {
-                if(files[i].isDirectory()) {
-                    deleteWorld(files[i]);
-                } else {
-                    files[i].delete();
-                }
-            }
-        }
-        return(path.delete());
-    }
-
-
-
 }

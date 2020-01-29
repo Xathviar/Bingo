@@ -1,6 +1,8 @@
 package github.xathviar.plugins.bingo;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -88,11 +90,6 @@ public class BingoData {
             entityBingoMap.clear();
             int[] time = startup.stopScheduler();
             startup.resetTimer();
-            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                World defaultWorld = Bukkit.getServer().getWorld("world");
-                onlinePlayer.teleport(defaultWorld.getSpawnLocation());
-            }
-            Startup.deleteWorld(Bukkit.getWorld("BingoWorld").getWorldFolder());
             if (time[0] != 0)
                 broadcastMessage(String.format("%s won the Bingo after %02d Hours, %02d Minutes, %02d Seconds.", entity.getDisplayName(), time[0], time[1], time[2]));
             else if (time[1] != 0)
