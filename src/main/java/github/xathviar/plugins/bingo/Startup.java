@@ -74,6 +74,7 @@ public final class Startup extends JavaPlugin {
                         broadcastMessage("The bingo game has been reset");
                         Bukkit.getOnlinePlayers().forEach(n -> n.setBedSpawnLocation(Bukkit.getWorld("world").getSpawnLocation(), false));
                         Bukkit.getOnlinePlayers().forEach(n -> n.setHealth(0.0));
+                        Bukkit.unloadWorld("BingoWorld", false);
                         deleteWorld(Bukkit.getWorld("BingoWorld").getWorldFolder());
                     } else {
                         broadcastMessage("There is no bingo game to reset");
@@ -84,31 +85,13 @@ public final class Startup extends JavaPlugin {
                         return true;
                     }
                     started = true;
-                    Location l;
                     Player p = (Player) sender;
-                    WorldCreator wc = new WorldCreator("BingoWorld")
+                    World bingoWorld = new WorldCreator("BingoWorld")
                             .generateStructures(true)
-                            .type(WorldType.NORMAL);
-                    World bingoWorld = Bukkit.getServer().createWorld(wc);
-                    int x;
-                    int y = 150;
-                    int z;
-                    do {
-                        x = (int) (Math.random() * 10000 * Math.random());
-                        z = (int) (Math.random() * 10000 * Math.random());
-                    } while (bingoWorld.getBiome(x, y, z) == Biome.OCEAN
-                            || p.getWorld().getBiome(x, y, z) == Biome.COLD_OCEAN
-                            || p.getWorld().getBiome(x, y, z) == Biome.FROZEN_OCEAN
-                            || p.getWorld().getBiome(x, y, z) == Biome.LUKEWARM_OCEAN
-                            || p.getWorld().getBiome(x, y, z) == Biome.WARM_OCEAN
-                            || p.getWorld().getBiome(x, y, z) == Biome.DEEP_LUKEWARM_OCEAN
-                            || p.getWorld().getBiome(x, y, z) == Biome.DEEP_COLD_OCEAN
-                            || p.getWorld().getBiome(x, y, z) == Biome.DEEP_FROZEN_OCEAN
-                            || p.getWorld().getBiome(x, y, z) == Biome.DEEP_WARM_OCEAN
-                            || p.getWorld().getBiome(x, y, z) == Biome.DEEP_OCEAN);
-                    l = new Location(bingoWorld, x, y, z);
-                    bingoWorld.setSpawnLocation(l);
-                    while (!bingoWorld.isChunkGenerated(l.getChunk().getChunkKey())) {
+                            .seed(new Random().nextLong())
+                            .type(WorldType.NORMAL)
+                            .createWorld();
+                    while (!bingoWorld.isChunkGenerated(bingoWorld.getSpawnLocation().getChunk().getChunkKey())) {
                         try {
                             Title title = new Title("Please wait while the Map is loading", "", 0, 1000, 0);
                             Bukkit.getOnlinePlayers().forEach(n -> n.sendTitle(title));
@@ -130,17 +113,25 @@ public final class Startup extends JavaPlugin {
                     broadcastMessage("The bingo game has been started. Good luck everyone");
                     startTask();
                 } else if (args[0].equalsIgnoreCase("resume") && sender.hasPermission("bingo.resume")) {
-                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        onlinePlayer.setGameMode(GameMode.SURVIVAL);
+                    if (paused && started) {
+                        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                            onlinePlayer.setGameMode(GameMode.SURVIVAL);
+                        }
+                        paused = false;
+                        startTask();
+                    } else {
+                        sendMessage((Player)sender, "You cannot resume the game if the game is not paused");
                     }
-                    paused = false;
-                    startTask();
                 } else if (args[0].equalsIgnoreCase("pause") && sender.hasPermission("bingo.pause")) {
-                    paused = true;
-                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        onlinePlayer.setGameMode(GameMode.SPECTATOR);
+                    if (!paused && started) {
+                        paused = true;
+                        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                            onlinePlayer.setGameMode(GameMode.SPECTATOR);
+                        }
+                        scheduler.cancelTask(task.getTaskId());
+                    } else {
+                        sendMessage((Player)sender, "You cannot pause the game if there is no game");
                     }
-                    scheduler.cancelTask(task.getTaskId());
                 } else if (args[0].equalsIgnoreCase("board")) {
                     if (started) {
                         bingoData.displayBoard((Player) sender);

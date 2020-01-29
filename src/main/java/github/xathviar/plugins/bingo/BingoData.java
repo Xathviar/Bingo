@@ -92,6 +92,7 @@ public class BingoData {
                 World defaultWorld = Bukkit.getServer().getWorld("world");
                 onlinePlayer.teleport(defaultWorld.getSpawnLocation());
             }
+            Bukkit.unloadWorld("BingoWorld", false);
             Startup.deleteWorld(Bukkit.getWorld("BingoWorld").getWorldFolder());
             if (time[0] != 0)
                 broadcastMessage(String.format("%s won the Bingo after %02d Hours, %02d Minutes, %02d Seconds.", entity.getDisplayName(), time[0], time[1], time[2]));
