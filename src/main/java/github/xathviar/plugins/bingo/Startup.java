@@ -2,7 +2,6 @@ package github.xathviar.plugins.bingo;
 
 import com.destroystokyo.paper.Title;
 import org.bukkit.*;
-import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -36,12 +35,6 @@ public final class Startup extends JavaPlugin {
         paused = false;
         bingoData = new BingoData(this);
         Bukkit.getServer().getPluginManager().registerEvents(new BingoListener(bingoData), this);
-        this.getCommand("wc").setExecutor(new UtilsCommandExecutor(this));
-        this.getCommand("rc").setExecutor(new UtilsCommandExecutor(this));
-        this.getCommand("gm1").setExecutor(new UtilsCommandExecutor(this));
-        this.getCommand("gm0").setExecutor(new UtilsCommandExecutor(this));
-        this.getCommand("heal").setExecutor(new UtilsCommandExecutor(this));
-        this.getCommand("feed").setExecutor(new UtilsCommandExecutor(this));
     }
 
     @Override
@@ -120,7 +113,7 @@ public final class Startup extends JavaPlugin {
                         paused = false;
                         startTask();
                     } else {
-                        sendMessage((Player)sender, "You cannot resume the game if the game is not paused");
+                        sendMessage((Player) sender, "You cannot resume the game if the game is not paused");
                     }
                 } else if (args[0].equalsIgnoreCase("pause") && sender.hasPermission("bingo.pause")) {
                     if (!paused && started) {
@@ -130,7 +123,7 @@ public final class Startup extends JavaPlugin {
                         }
                         scheduler.cancelTask(task.getTaskId());
                     } else {
-                        sendMessage((Player)sender, "You cannot pause the game if there is no game");
+                        sendMessage((Player) sender, "You cannot pause the game if there is no game");
                     }
                 } else if (args[0].equalsIgnoreCase("board")) {
                     if (started) {
