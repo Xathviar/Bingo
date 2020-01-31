@@ -20,15 +20,3 @@ commands:
     description: lets you resume the paused game
   bingo custom:
     description: lets you create a custom bingo board
-  heal:
-    description: heals players
-  feed:
-    description: feeds players
-  wc:
-    description: clears the weather and changes the time to day
-  gm1:
-    description: sets players to GameMode 1
-  gm0:
-    description: sets players to GameMode 0
-  rc:
-    description: reloads the server
