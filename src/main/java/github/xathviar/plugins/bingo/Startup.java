@@ -13,6 +13,10 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Random;
 
 import static github.xathviar.plugins.bingo.HelperClass.broadcastMessage;
@@ -52,6 +56,7 @@ public final class Startup extends JavaPlugin {
                     sendMessage((Player) sender, "'/bingo start' starts a new game of bingo");
                     sendMessage((Player) sender, "'/bingo reset' reset the items you already have");
                     sendMessage((Player) sender, "'/bingo board' displays the current bingo board");
+                    sendMessage((Player) sender, "'/bingo custom' lets you create a custom bingo board");
                 } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("bingo.reset")) {
                     if (started) {
                         if (task != null) {
@@ -66,9 +71,10 @@ public final class Startup extends JavaPlugin {
                         bingoData.reset();
                         broadcastMessage("The bingo game has been reset");
                         Bukkit.getOnlinePlayers().forEach(n -> n.setBedSpawnLocation(Bukkit.getWorld("world").getSpawnLocation(), false));
-                        Bukkit.getOnlinePlayers().forEach(n -> n.setHealth(0.0));
+                        Bukkit.getOnlinePlayers().forEach(n -> n.getInventory().clear());
+                        Bukkit.getOnlinePlayers().forEach(n -> n.teleport(Bukkit.getWorld("world").getSpawnLocation()));
                         Bukkit.unloadWorld("BingoWorld", false);
-                        deleteWorld(Bukkit.getWorld("BingoWorld").getWorldFolder());
+                        deleteWorld(Bukkit.getWorld("BingoWorld").getWorldFolder().toPath());
                     } else {
                         broadcastMessage("There is no bingo game to reset");
                     }
@@ -193,20 +199,14 @@ public final class Startup extends JavaPlugin {
         return paused;
     }
 
-
-    public static boolean deleteWorld(File path) {
-        if (path.exists()) {
-            File files[] = path.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isDirectory()) {
-                    deleteWorld(files[i]);
-                } else {
-                    files[i].delete();
-                }
-            }
+    public static void deleteWorld(Path path) {
+        try {
+            Files.walk(path)
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return (path.delete());
     }
-
-
 }
