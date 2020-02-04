@@ -94,7 +94,6 @@ public class BingoData {
                 onlinePlayer.teleport(defaultWorld.getSpawnLocation());
             }
             Bukkit.unloadWorld("BingoWorld", false);
-            Startup.deleteWorld(Bukkit.getWorld("BingoWorld").getWorldFolder());
             if (time[0] != 0)
                 broadcastMessage(String.format("%s won the Bingo after %02d Hours, %02d Minutes, %02d Seconds.", entity.getDisplayName(), time[0], time[1], time[2]));
             else if (time[1] != 0)
@@ -219,6 +218,9 @@ public class BingoData {
         materials.remove(Material.CYAN_WALL_BANNER);
         materials.remove(Material.DAMAGED_ANVIL);
         materials.remove(Material.DARK_OAK_WALL_SIGN);
+        materials.remove(Material.DARK_PRISMARINE);
+        materials.remove(Material.DARK_PRISMARINE_SLAB);
+        materials.remove(Material.DARK_PRISMARINE_STAIRS);
         materials.remove(Material.DEAD_BRAIN_CORAL);
         materials.remove(Material.DEAD_BRAIN_CORAL_BLOCK);
         materials.remove(Material.DEAD_BRAIN_CORAL_FAN);

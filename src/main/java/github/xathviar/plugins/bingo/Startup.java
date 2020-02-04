@@ -5,7 +5,9 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -52,6 +54,7 @@ public final class Startup extends JavaPlugin {
                     sendMessage((Player) sender, "'/bingo start' starts a new game of bingo");
                     sendMessage((Player) sender, "'/bingo reset' reset the items you already have");
                     sendMessage((Player) sender, "'/bingo board' displays the current bingo board");
+                    sendMessage((Player) sender, "'/bingo custom' lets you create a custom bingo board");
                 } else if (args[0].equalsIgnoreCase("reset") && sender.hasPermission("bingo.reset")) {
                     if (started) {
                         if (task != null) {
@@ -65,10 +68,6 @@ public final class Startup extends JavaPlugin {
                         }
                         bingoData.reset();
                         broadcastMessage("The bingo game has been reset");
-                        Bukkit.getOnlinePlayers().forEach(n -> n.setBedSpawnLocation(Bukkit.getWorld("world").getSpawnLocation(), false));
-                        Bukkit.getOnlinePlayers().forEach(n -> n.setHealth(0.0));
-                        Bukkit.unloadWorld("BingoWorld", false);
-                        deleteWorld(Bukkit.getWorld("BingoWorld").getWorldFolder());
                     } else {
                         broadcastMessage("There is no bingo game to reset");
                     }
@@ -78,31 +77,13 @@ public final class Startup extends JavaPlugin {
                         return true;
                     }
                     started = true;
-                    Player p = (Player) sender;
-                    World bingoWorld = new WorldCreator("BingoWorld")
-                            .generateStructures(true)
-                            .seed(new Random().nextLong())
-                            .type(WorldType.NORMAL)
-                            .createWorld();
-                    while (!bingoWorld.isChunkGenerated(bingoWorld.getSpawnLocation().getChunk().getChunkKey())) {
-                        try {
-                            Title title = new Title("Please wait while the Map is loading", "", 0, 1000, 0);
-                            Bukkit.getOnlinePlayers().forEach(n -> n.sendTitle(title));
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
                         onlinePlayer.setHealth(20);
                         onlinePlayer.setFoodLevel(20);
                         onlinePlayer.setSaturation(1);
                         onlinePlayer.getInventory().clear();
                         onlinePlayer.setGameMode(GameMode.SURVIVAL);
-                        onlinePlayer.teleport(bingoWorld.getSpawnLocation());
-                        onlinePlayer.setBedSpawnLocation(bingoWorld.getSpawnLocation(), true);
-                        onlinePlayer.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 255, 10));
-                    }
+                    });
                     broadcastMessage("The bingo game has been started. Good luck everyone");
                     startTask();
                 } else if (args[0].equalsIgnoreCase("resume") && sender.hasPermission("bingo.resume")) {
@@ -192,21 +173,4 @@ public final class Startup extends JavaPlugin {
     public boolean isPaused() {
         return paused;
     }
-
-
-    public static boolean deleteWorld(File path) {
-        if (path.exists()) {
-            File files[] = path.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                if (files[i].isDirectory()) {
-                    deleteWorld(files[i]);
-                } else {
-                    files[i].delete();
-                }
-            }
-        }
-        return (path.delete());
-    }
-
-
 }
