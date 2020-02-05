@@ -20,3 +20,15 @@ commands:
     description: lets you resume the paused game
   bingo custom:
     description: lets you create a custom bingo board
+
+
+  team:
+    description: lets you create and manage teams
+  team create:
+    description: lets you create a team
+  team list:
+    description: gives you a list of every team and its members
+  team join:
+    description: lets you join a team or put a player into a team
+  team leave:
+    description: lets you leave a team or remove a player from a team

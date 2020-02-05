@@ -1,21 +1,14 @@
 package github.xathviar.plugins.bingo;
 
-import com.destroystokyo.paper.Title;
+import de.laserlord.minecraft.teamsystem.TeamManager;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerBedLeaveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
-
-import java.io.File;
-import java.util.Random;
 
 import static github.xathviar.plugins.bingo.HelperClass.broadcastMessage;
 import static github.xathviar.plugins.bingo.HelperClass.sendMessage;
@@ -29,14 +22,16 @@ public final class Startup extends JavaPlugin {
     private boolean paused;
     private BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
     private BukkitTask task;
-
+    TeamManager teamManager;
 
     @Override
     public void onEnable() {
         started = false;
         paused = false;
         bingoData = new BingoData(this);
+        teamManager = new TeamManager(this);
         Bukkit.getServer().getPluginManager().registerEvents(new BingoListener(bingoData), this);
+        this.getCommand("team").setExecutor(new TeamCommandExecutor(this));
     }
 
     @Override
