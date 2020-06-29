@@ -1,6 +1,5 @@
 package github.xathviar.plugins.bingo;
 
-import com.destroystokyo.paper.Title;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -88,6 +87,7 @@ public final class Startup extends JavaPlugin {
                     Player p = (Player) sender;
 
                     Bukkit.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
+                        @Override
                         public void run() {
                             World bingoWorld = new WorldCreator("BingoWorld")
                                     .generateStructures(true)
@@ -96,9 +96,13 @@ public final class Startup extends JavaPlugin {
                                     .createWorld();
                             while (Bukkit.getWorld(Objects.requireNonNull(bingoWorld).getName()) != null) {
                                 try {
-                                    Title title = new Title("Please wait\nwhile the Map\nis loading", "", 0, 1000, 0);
-                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendTitle(title));
-                                    Thread.sleep(1000);
+                                    System.out.println("Test");
+                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Please wait while the Map is loading.", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
+                                    Thread.sleep(500);
+                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Please wait while the Map is loading..", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
+                                    Thread.sleep(500);
+                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Please wait while the Map is loading...", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
+                                    Thread.sleep(500);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
