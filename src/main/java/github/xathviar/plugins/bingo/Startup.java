@@ -97,11 +97,11 @@ public final class Startup extends JavaPlugin {
                             while (Bukkit.getWorld(Objects.requireNonNull(bingoWorld).getName()) != null) {
                                 try {
                                     System.out.println("Test");
-                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Please wait while the Map is loading.", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
+                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar("Please wait while the Map is loading."));
                                     Thread.sleep(500);
-                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Please wait while the Map is loading..", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
+                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar("Please wait while the Map is loading.."));
                                     Thread.sleep(500);
-                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar(String.format("Please wait while the Map is loading...", ChatColor.YELLOW, h[0], m[0], s[0], ChatColor.WHITE)));
+                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar("Please wait while the Map is loading..."));
                                     Thread.sleep(500);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
