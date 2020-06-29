@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Random;
 
 import static github.xathviar.plugins.bingo.HelperClass.broadcastMessage;
@@ -85,32 +86,39 @@ public final class Startup extends JavaPlugin {
                     }
                     started = true;
                     Player p = (Player) sender;
-                    World bingoWorld = new WorldCreator("BingoWorld")
-                            .generateStructures(true)
-                            .seed(new Random().nextLong())
-                            .type(WorldType.NORMAL)
-                            .createWorld();
-                    while (!bingoWorld.isChunkGenerated(bingoWorld.getSpawnLocation().getChunk().getChunkKey())) {
-                        try {
-                            Title title = new Title("Please wait while the Map is loading", "", 0, 1000, 0);
-                            Bukkit.getOnlinePlayers().forEach(n -> n.sendTitle(title));
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+
+                    Bukkit.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
+                        public void run() {
+                            World bingoWorld = new WorldCreator("BingoWorld")
+                                    .generateStructures(true)
+                                    .seed(new Random().nextLong())
+                                    .type(WorldType.NORMAL)
+                                    .createWorld();
+                            while (Bukkit.getWorld(Objects.requireNonNull(bingoWorld).getName()) != null) {
+                                try {
+                                    Title title = new Title("Please wait\nwhile the Map\nis loading", "", 0, 1000, 0);
+                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendTitle(title));
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                                onlinePlayer.setHealth(20);
+                                onlinePlayer.setFoodLevel(20);
+                                onlinePlayer.setSaturation(1);
+                                onlinePlayer.getInventory().clear();
+                                onlinePlayer.setGameMode(GameMode.SURVIVAL);
+                                onlinePlayer.teleport(bingoWorld.getSpawnLocation());
+                                onlinePlayer.setBedSpawnLocation(bingoWorld.getSpawnLocation(), true);
+                                onlinePlayer.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 255, 10));
+                            }
+                            broadcastMessage("The bingo game has been started. Good luck everyone");
+                            startTask();
                         }
-                    }
-                    for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                        onlinePlayer.setHealth(20);
-                        onlinePlayer.setFoodLevel(20);
-                        onlinePlayer.setSaturation(1);
-                        onlinePlayer.getInventory().clear();
-                        onlinePlayer.setGameMode(GameMode.SURVIVAL);
-                        onlinePlayer.teleport(bingoWorld.getSpawnLocation());
-                        onlinePlayer.setBedSpawnLocation(bingoWorld.getSpawnLocation(), true);
-                        onlinePlayer.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 255, 10));
-                    }
-                    broadcastMessage("The bingo game has been started. Good luck everyone");
-                    startTask();
+                    });
+
                 } else if (args[0].equalsIgnoreCase("resume") && sender.hasPermission("bingo.resume")) {
                     if (paused && started) {
                         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
