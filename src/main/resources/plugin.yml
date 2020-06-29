@@ -3,6 +3,7 @@ version: ${project.version}
 main: github.xathviar.plugins.bingo.Startup
 api-version: "1.13"
 authors: [xathviar, Laserlord]
+depend: [Multiverse-Core]
 commands:
   bb:
     description: shortform for  bingo board

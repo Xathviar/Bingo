@@ -62,6 +62,10 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>Multiverse-Core</id>
+            <url>http://repo.onarandombox.com/content/repositories/multiverse/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -71,5 +75,11 @@
             <version>1.15-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.onarandombox.multiversecore</groupId>
+            <artifactId>Multiverse-Core</artifactId>
+            <version>4.1.0</version>
+        </dependency>
     </dependencies>
+
 </project>

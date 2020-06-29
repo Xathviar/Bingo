@@ -1,6 +1,12 @@
 package github.xathviar.plugins.bingo;
 
+import com.onarandombox.MultiverseCore.MultiverseCore;
+import com.onarandombox.MultiverseCore.api.MVDestination;
+import com.onarandombox.MultiverseCore.api.MVWorldManager;
+import com.onarandombox.MultiverseCore.api.MultiverseWorld;
+import com.onarandombox.MultiverseCore.destination.DestinationFactory;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,6 +18,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -83,44 +90,35 @@ public final class Startup extends JavaPlugin {
                         broadcastMessage("There is already a running game.");
                         return true;
                     }
+                    MultiverseCore mvCore = ((MultiverseCore) Bukkit.getPluginManager().getPlugin("Multiverse-Core"));
+                    MVWorldManager mvWM = mvCore.getMVWorldManager();
+                    Random random = new Random();
+                    //TODO Start
                     started = true;
-                    Player p = (Player) sender;
-
-                    Bukkit.getServer().getScheduler().runTaskAsynchronously(this, new Runnable() {
-                        @Override
-                        public void run() {
-                            World bingoWorld = new WorldCreator("BingoWorld")
-                                    .generateStructures(true)
-                                    .seed(new Random().nextLong())
-                                    .type(WorldType.NORMAL)
-                                    .createWorld();
-                            while (Bukkit.getWorld(Objects.requireNonNull(bingoWorld).getName()) != null) {
-                                try {
-                                    System.out.println("Test");
-                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar("Please wait while the Map is loading."));
-                                    Thread.sleep(500);
-                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar("Please wait while the Map is loading.."));
-                                    Thread.sleep(500);
-                                    Bukkit.getOnlinePlayers().forEach(n -> n.sendActionBar("Please wait while the Map is loading..."));
-                                    Thread.sleep(500);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
-                            for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                                onlinePlayer.setHealth(20);
-                                onlinePlayer.setFoodLevel(20);
-                                onlinePlayer.setSaturation(1);
-                                onlinePlayer.getInventory().clear();
-                                onlinePlayer.setGameMode(GameMode.SURVIVAL);
-                                onlinePlayer.teleport(bingoWorld.getSpawnLocation());
-                                onlinePlayer.setBedSpawnLocation(bingoWorld.getSpawnLocation(), true);
-                                onlinePlayer.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 255, 10));
-                            }
-                            broadcastMessage("The bingo game has been started. Good luck everyone");
-                            startTask();
+                    //Player p = (Player) sender;
+                    String worldName = "BingoWorld";
+                    if (mvWM.getMVWorld(worldName) != null) {
+                        mvWM.deleteWorld(worldName, true);
+                    }
+                    mvWM.addWorld(worldName, World.Environment.NORMAL, String.valueOf(random.nextLong()), WorldType.NORMAL, true,
+                            null);
+                    MultiverseWorld world = mvWM.getMVWorld(worldName);
+                    DestinationFactory df = mvCore.getDestFactory();
+                    MVDestination d = df.getDestination(worldName);
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        p.resetTitle();
+                        if (p.isDead()) {
+                            ((CraftPlayer) p).getHandle().playerConnection
+                                    .a(new PacketPlayInClientCommand(EnumClientCommand.PERFORM_RESPAWN));
                         }
+                        mvCore.getSafeTTeleporter().safelyTeleport(this.getServer().getConsoleSender(), p, d);
+                        p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue());
+                        p.setFoodLevel(20);
+                        p.getActivePotionEffects().forEach((s) -> p.removePotionEffect(s.getType()));
+                        p.getInventory().clear();
+                    }
+                        broadcastMessage("The bingo game has been started. Good luck everyone");
+                        startTask();
                     });
 
                 } else if (args[0].equalsIgnoreCase("resume") && sender.hasPermission("bingo.resume")) {
